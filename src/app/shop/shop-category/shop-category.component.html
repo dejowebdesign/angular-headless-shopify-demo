@@ -1,0 +1,46 @@
+@if (!shop_category_2) {
+  <div [ngClass]="['banner__area', style_2 ? 'pt-95' : '', style_3 ? 'pt-20' : '', style_4 ? 'pt-30' : '']">
+    <div [ngClass]="['container', style_3 ? 'custom-container' : '']">
+      <div [ngClass]="[style_2 ? '' : (!style_3 && !style_4 ? 'banner__inner p-relative mt--95 z-index-1' : ''), style_4 ? 'banner__inner-2 p-relative' : '']">
+        <div class="row">
+          @for (item of category_data.slice(0, 3); track item.id) {
+            <div class="col-xl-4 col-lg-4 col-md-6">
+              <div class="banner__item mb-30 p-relative">
+                <div class="banner__thumb fix">
+                  <a [routerLink]="['/shop']" [queryParams]="{category: utilsService.convertToURL(item.parentTitle)}" class="w-img">
+                    <img [src]="item.img" alt="banner" />
+                  </a>
+                </div>
+                <div class="banner__content p-absolute transition-3">
+                  <h5>
+                    <a [routerLink]="['/shop']" [queryParams]="{category: utilsService.convertToURL(item.parentTitle)}" [innerHTML]="item.parentTitle"></a>
+                  </h5>
+                  <a [routerLink]="['/shop']" [queryParams]="{category: utilsService.convertToURL(item.parentTitle)}" class="link-btn">Discover now</a>
+                </div>
+              </div>
+            </div>
+          }
+        </div>
+      </div>
+    </div>
+  </div>
+}
+
+<!-- banner__area-df start -->
+@if (shop_category_2) {
+  <div class="banner__area-df mt-10">
+    @for (item of category_data.slice(3, 6); track item.id) {
+      <div class="banner__item-3 mb-30">
+        <div class="banner__item-3-image m-img">
+          <img [src]="item.img" alt="category-img">
+        </div>
+        <div class="banner__content-5">
+          <h5>{{item.parentTitle}}</h5>
+          <p>{{item.smDesc}}</p>
+          <a [routerLink]="['/shop']" [queryParams]="{category: utilsService.convertToURL(item.parentTitle)}" class="os-btn-5">Shop Now</a>
+        </div>
+      </div>
+    }
+  </div>
+}
+<!-- banner__area-df end -->

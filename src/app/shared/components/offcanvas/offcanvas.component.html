@@ -1,0 +1,39 @@
+<section [ngClass]="'extra__info transition-3 ' + (utilsService.openMobileMenus ? 'info-opened' : '')">
+  <div class="extra__info-inner">
+    <div class="extra__info-close text-end">
+      <a (click)="utilsService.handleOpenMobileMenu()" class="extra__info-close-btn cursor-pointer">
+        <i class="fal fa-times"></i>
+      </a>
+    </div>
+
+    <!-- side-mobile-menu start -->
+    <nav class="side-mobile-menu d-block d-lg-none mm-menu">
+      <ul>
+        @for (menu of mobile_menus; track $index; let i = $index) {
+          <li [ngClass]="'menu-item-has-children has-droupdown ' + (activeMenu === menu.title ? 'active' : '')">
+            <a (click)="handleOpenMenu(menu.title)">{{ menu.title }}</a>
+            <ul [ngClass]="'sub-menu ' + (activeMenu === menu.title ? 'active' : '')">
+              @for (sub_m of menu.dropdownMenu; track sub_m; let index = $index) {
+                <li>
+                  <a [routerLink]="sub_m.link">{{ sub_m.title }}</a>
+                </li>
+              }
+            </ul>
+          </li>
+          @if (!menu.dropdownMenu) {
+            <li>
+              <a [routerLink]="menu.link">{{ menu.title }}</a>
+            </li>
+          }
+        }
+      </ul>
+    </nav>
+    <!-- side-mobile-menu end -->
+  </div>
+</section>
+
+<!--  body overlay  -->
+<div
+  (click)="utilsService.handleOpenMobileMenu()"
+  [ngClass]="'body-overlay transition-3 ' + (utilsService.openMobileMenus ? 'opened' : '')"
+></div>

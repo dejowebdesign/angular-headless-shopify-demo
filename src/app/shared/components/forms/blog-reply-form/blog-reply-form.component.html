@@ -1,0 +1,48 @@
+<form id="contacts-form" class="conatct-post-form" [formGroup]="blogReplyForm" (ngSubmit)="onSubmit()">
+  <div class="row">
+    <div class="col-xl-6 col-lg-6 col-md-6">
+      <div class="contact-icon p-relative contacts-name mb-30">
+        <input type="text" placeholder="Name" id="name" formControlName="name">
+        @if (name?.hasError('required') && (name?.touched || formSubmitted)) {
+          <span class="text-danger">
+            Name is required
+          </span>
+        }
+      </div>
+    </div>
+    <div class="col-xl-6 col-lg-6 col-md-6">
+      <div class="contact-icon p-relative contacts-name mb-30">
+        <input type="email" placeholder="Email" id="email" formControlName="email">
+        @if ((email?.hasError('required') && email?.touched) ||(email?.hasError('email') && email?.dirty) || (formSubmitted && !email?.value)) {
+          <span class="text-danger">
+            Email is required and must be a valid email address
+          </span>
+        }
+      </div>
+    </div>
+    <div class="col-xl-12">
+      <div class="contact-icon p-relative contacts-email mb-30">
+        <input type="text" placeholder="Subject" id="subject" formControlName="subject">
+        @if (subject?.hasError('required') && (subject?.touched || formSubmitted)) {
+          <span class="text-danger">
+            subject is required
+          </span>
+        }
+      </div>
+    </div>
+    <div class="col-xl-12">
+      <div class="contact-icon p-relative contacts-message mb-30">
+        <textarea name="comment" id="comment" cols="30" rows="10" placeholder="Comments">
+        </textarea>
+        @if (comment?.hasError('required') && (comment?.touched || formSubmitted)) {
+          <span  class="text-danger">
+            Comment is required
+          </span>
+        }
+      </div>
+    </div>
+    <div class="col-xl-12">
+      <button class="os-btn os-btn-black" type="submit">Post comment</button>
+    </div>
+  </div>
+</form>

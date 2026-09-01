@@ -1,0 +1,34 @@
+<!-- testimonial area start -->
+<section class="testimonial__area box-m-15 pt-100 pb-140" style="background-image: url(/assets/img/testimonial/testimonial-bg.jpg);">
+  <div class="container">
+    <div class="row">
+      <div class="col-xl-8 offset-xl-2 col-lg-8 offset-lg-2">
+        <div class="testimonial__nav swiper-container">
+          <div class="swiper-wrapper">
+            @for (item of nav_data; track item.id; let index = $index) {
+              <div class="testimonial__nav-thumb item-1 swiper-slide">
+                <img [src]="item.img" alt="person">
+              </div>
+            }
+          </div>
+        </div>
+
+        <div class="testimonial__wrapper mt-40 swiper-container">
+          <div class="swiper-wrapper">
+            @for (item of testimonial_data; track item.id; let index = $index) {
+              <div class="testimonial__item item-1 swiper-slide">
+                <div class="avater__info mb-15">
+                  <h6>{{item.name}}</h6>
+                  <span>{{item.title}}</span>
+                </div>
+                <p>{{item.desc}}</p>
+              </div>
+            }
+          </div>
+          <div class="tp-slider-dot-3"></div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+<!-- testimonial area end -->

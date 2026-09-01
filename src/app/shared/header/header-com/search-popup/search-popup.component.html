@@ -1,0 +1,55 @@
+<!-- search area start -->
+<section
+  class="header__search white-bg transition-3"
+  [class.search-opened]="utilsService.isSearchOpen"
+  >
+  <div class="container">
+    <div class="row">
+      <div class="col-xl-12">
+        <div class="header__search-inner text-center">
+          <form (ngSubmit)="handleSearchSubmit()">
+            <div class="header__search-btn">
+              <a
+                (click)="utilsService.handleSearchOpen()"
+                class="header__search-btn-close cursor-pointer">
+                <i class="fal fa-times"></i>
+              </a>
+            </div>
+            <div class="header__search-header">
+              <h3>Search</h3>
+            </div>
+            <div class="header__search-categories">
+              <ul class="search-category">
+                @for (c of uniqueChildren; track c; let i = $index) {
+                  <li
+                    (click)="handleProductType(c)"
+                    >
+                    <a class="cursor-pointer" [class.active]="c === productType">
+                      {{ c }}
+                    </a>
+                  </li>
+                }
+              </ul>
+            </div>
+            <div class="header__search-input p-relative">
+              <input
+                type="text"
+                placeholder="Search for products... "
+                [(ngModel)]="searchText"
+                name="searchText"
+                />
+              <button type="submit"><i class="far fa-search"></i></button>
+            </div>
+          </form>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+<!-- body overlay -->
+<div
+  (click)="utilsService.handleSearchOpen()"
+  class="body-overlay transition-3"
+  [class.opened]="utilsService.isSearchOpen"
+></div>
+<!-- search area end -->

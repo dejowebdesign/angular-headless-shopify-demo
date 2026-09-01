@@ -1,0 +1,74 @@
+<!-- header start -->
+<app-header-one [transparent]="true" [white_bg]="true"></app-header-one>
+<!-- header end -->
+
+<main>
+
+  <!-- breadcrumb start -->
+  <app-breadcrumb-one title="Wishlist" subtitle="Wishlist"></app-breadcrumb-one>
+  <!-- breadcrumb end -->
+
+  <!-- wishlist area start-->
+  <section class="cart-area pt-100 pb-100">
+    <div class="container">
+      @if (wishlistService.getWishlistProducts().length === 0) {
+        <div class="text-center pt-50">
+          <h3>No Wishlist Items Found</h3>
+          <a routerLink="/shop" class="os-btn os-btn-black mt-20">Continue Shopping</a>
+        </div>
+      }
+      @if (wishlistService.getWishlistProducts().length > 0) {
+        <div class="row">
+          <div class="col-12">
+            <div class="table-content table-responsive">
+              <table class="table">
+                <thead>
+                  <tr>
+                    <th class="product-thumbnail">Images</th>
+                    <th class="cart-product-name">Product</th>
+                    <th class="product-price">Unit Price</th>
+                    <th class="product-quantity">Quantity</th>
+                    <th class="product-remove">Remove</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  @for (item of wishlistService.getWishlistProducts(); track $index) {
+                    <tr>
+                      <td class="product-thumbnail">
+                        <a [routerLink]="['/shop/shop-details', item.id]">
+                          <img [src]="item.img" alt="product-img">
+                        </a>
+                      </td>
+                      <td class="product-name">
+                        <a [routerLink]="['/shop/shop-details', item.id]">{{item.title}}</a>
+                      </td>
+                      <td class="product-price">
+                        <span class="amount">${{item.price.toFixed(2)}}</span>
+                      </td>
+                      <td class="product-quantity">
+                        <button (click)="cartService.addCartProduct(item)" class="os-btn os-btn-black">
+                          Add TO Cart
+                        </button>
+                      </td>
+                      <td class="product-remove">
+                        <a (click)="wishlistService.removeWishlist(item)" class="cursor-pointer">
+                          <i class="fa fa-times"></i>
+                        </a>
+                      </td>
+                    </tr>
+                  }
+                </tbody>
+              </table>
+            </div>
+          </div>
+        </div>
+      }
+    </div>
+  </section>
+  <!-- wishlist area End-->
+
+</main>
+
+<!-- footer start -->
+<app-footer-one></app-footer-one>
+<!-- footer end -->

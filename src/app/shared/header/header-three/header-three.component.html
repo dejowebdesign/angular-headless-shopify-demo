@@ -1,0 +1,75 @@
+<header>
+  <div id="header__transparent" class="header__area header__transparent">
+    <div class="container">
+      <div class="header__top header__top-2">
+        <div class="row align-items-center">
+          <div class="col-xl-4 col-lg-4 col-md-3 col-sm-12">
+            <div class="header__welcome">
+              <span>Wellcome to Outstock2!</span>
+            </div>
+          </div>
+          <div class="col-xl-4 col-lg-4 col-md-3 col-sm-5">
+            <div class="logo logo__6 text-md-center">
+              <a routerLink="/home/home-style-1">
+                <img src="/assets/img/logo/logo.png" alt="logo"/>
+              </a>
+            </div>
+          </div>
+          <div class="col-xl-4 col-lg-4 col-md-6 col-sm-7">
+            <div class="header__right p-relative d-flex justify-content-between justify-content-sm-end align-items-center">
+              <div class="mobile-menu-btn d-lg-none">
+                <a (click)="utilsService.handleOpenMobileMenu()" class="mobile-menu-toggle cursor-pointer">
+                  <i class="fas fa-bars"></i>
+                </a>
+              </div>
+              <div class="header__action">
+                <ul>
+                  <li>
+                    <a (click)="utilsService.handleSearchOpen()" class="search-toggle cursor-pointer">
+                      <i class="ion-ios-search-strong"></i> Search
+                    </a>
+                  </li>
+                  <li>
+                    <a class="cursor-pointer" class="cart">
+                      <i class="ion-bag"></i> Cart <span>({{cartService.totalPriceQuantity().quantity}})</span>
+                    </a>
+                    <!-- mini cart start -->
+                    <app-mini-cart></app-mini-cart>
+                    <!-- mini cart end -->
+                  </li>
+                  <li>
+                    <a class="cursor-pointer">
+                      <i class="far fa-bars"></i>
+                    </a>
+                    <!-- extra info start -->
+                    <app-extra-info></app-extra-info>
+                    <!-- extra info end -->
+                  </li>
+                </ul>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div id="header-sticky" class="header__bottom" [class.sticky]="sticky">
+        <div class="row">
+          <div class="col-xl-8 offset-xl-2 col-lg-10 offset-lg-1">
+            <div class="main-menu d-none d-lg-flex justify-content-center p-relative">
+              <!-- nav menu start -->
+              <app-nav-manus></app-nav-manus>
+              <!-- nav menu end -->
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</header>
+
+<!-- search popup start -->
+<app-search-popup></app-search-popup>
+<!-- search popup end -->
+
+<!-- mobile offcanvas start -->
+<app-offcanvas></app-offcanvas>
+<!-- mobile offcanvas end -->

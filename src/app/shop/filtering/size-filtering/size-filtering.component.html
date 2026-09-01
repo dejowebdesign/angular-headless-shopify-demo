@@ -1,0 +1,22 @@
+<div class="sidebar__widget mb-55">
+  <div class="sidebar__widget-title mb-30">
+    <h3>Any Size</h3>
+  </div>
+  <div class="sidebar__widget-content">
+    <div class="size">
+      <ul>
+        @for (s of all_sizes; track s) {
+          <li>
+            <a
+              (click)="handleSize(s)"
+              class="cursor-pointer"
+              [class.active]="s.toLowerCase() === size"
+              >
+              {{ s }}
+            </a>
+          </li>
+        }
+      </ul>
+    </div>
+  </div>
+</div>

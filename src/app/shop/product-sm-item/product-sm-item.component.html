@@ -1,0 +1,30 @@
+<div class="features__product-wrapper d-flex mb-20">
+  <div class="features__product-thumb mr-15">
+    <a [routerLink]="['/shop/shop-details', product.id]">
+      <img [src]="product.img" alt="pro-sm-1" width="86" height="110">
+    </a>
+  </div>
+  <div class="features__product-content">
+    <h5>
+      <a [routerLink]="['/shop/shop-details', product.id]" [innerHTML]="product.title"></a>
+    </h5>
+    <div class="price">
+      <span>${{product.price}}</span>
+      @if (product.old_price) {
+        <span class="price-old">${{product.old_price}}</span>
+      }
+      <div class="add-cart p-absolute transition-3">
+        @if (!isItemInCart(product)) {
+          <a (click)="addToCart(product)" class="cursor-pointer">
+            + Add to Cart
+          </a>
+        }
+        @if (isItemInCart(product)) {
+          <a routerLink="/shop/cart" class="cursor-pointer">
+            View Cart
+          </a>
+        }
+      </div>
+    </div>
+  </div>
+</div>

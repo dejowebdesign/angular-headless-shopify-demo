@@ -1,0 +1,16 @@
+@use "variables" as *;
+@use "mixins" as *;
+/*----------------------------------------*/
+/*  06. CLIENT CSS START
+/*----------------------------------------*/
+
+
+.client{
+    &__area{}
+    &__slider{}
+    &__thumb{
+        & img{
+            width: inherit !important;
+        }
+    }
+}

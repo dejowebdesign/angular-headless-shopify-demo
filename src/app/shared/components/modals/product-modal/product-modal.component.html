@@ -1,0 +1,31 @@
+@if (utilsService.modalId && utilsService.product) {
+  <div
+    class="modal fade"
+    [id]="utilsService.modalId"
+    tabindex="-1"
+    [attr.aria-labelledby]="utilsService.modalId"
+    aria-hidden="true"
+    >
+    <div class="modal-dialog modal-dialog-centered product-modal" role="document">
+      <div class="modal-content">
+        <div class="product__modal-wrapper p-relative">
+          <div class="product__modal-close p-absolute">
+            <button
+              [attr.data-bs-toggle]="'modal'"
+              [attr.data-bs-target]="'#' + utilsService.modalId"
+              >
+              <i class="fal fa-times"></i>
+            </button>
+          </div>
+          <div class="product__modal-inner">
+            <app-product-details-upper
+              [bottomShow]="false"
+              [style_2]="true"
+              [product]="utilsService.product"
+            ></app-product-details-upper>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+}

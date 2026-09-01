@@ -1,0 +1,266 @@
+<!-- header start -->
+<app-header-four></app-header-four>
+<!-- header end -->
+
+<main>
+
+  <!-- hero slider area start -->
+  <section class="slider__area slider__area-3 p-relative">
+    <div class="slider-active-3 swiper-container" #heroSliderContainer>
+      <button (click)="swiperInstance?.slidePrev()" type="button" class="slick-prev slick-arrow">
+        <i class="fal fa-angle-left"></i>
+      </button>
+      <div class="swiper-wrapper">
+        @for (item of hero_slider_data; track item.id) {
+          <div
+            class="single-slider single-slider-2 slider__height-6 d-flex align-items-center swiper-slide"
+            [style.backgroundImage]="'url(' + item.bgImg + ')'">
+            <div class="container custom-container-2">
+              <div class="row">
+                <div class="col-xl-7 col-lg-7 col-md-10">
+                  <div class="slider__content slider__content-5">
+                    <span [class.meta]="item.meta">{{item.sm_title}}</span>
+                    <h2 [innerHTML]="item.title"></h2>
+                    <p>{{item.subtitle}}</p>
+                    <a routerLink="/shop" class="os-btn-4">Shop Now</a>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        }
+      </div>
+      <div class="tp-slider-dot tp-swiper-dot"></div>
+      <button (click)="swiperInstance?.slideNext()" type="button" class="slick-next slick-arrow">
+        <i class="fal fa-angle-right"></i>
+      </button>
+    </div>
+  </section>
+  <!-- hero slider area end -->
+
+  <!-- shop category start -->
+  <app-shop-category [shop_category_2]="true"></app-shop-category>
+  <!-- shop category end -->
+
+  <!-- product__view-area start -->
+  <div class="product__view-area pt-60 pb-60">
+    <div class="container custom-container-2">
+      <div class="row">
+        <div class="col-xl-12">
+          <div class="section__wrapper text-center">
+            <h3 class="section__title-2"><span>BESTSELLER PRODUCTS</span></h3>
+            <p>Eodem modo typi, qui nunc nobis videntur parum clari</p>
+          </div>
+        </div>
+      </div>
+      <div class="row mt-40">
+        <div class="col-xl-6 col-lg-6">
+          <div class="row">
+            <div class="col-lg-12">
+              <div class="row">
+                @for (item of sm_best_prd.slice(0,2); track item.id) {
+                  <div class="col-xl-6 col-lg-12 col-md-6">
+                    <app-product-item-two [product]="item"></app-product-item-two>
+                  </div>
+                }
+              </div>
+            </div>
+            <div class="col-lg-12">
+              <div class="product__big-image effectThree mb-40">
+                <a [routerLink]="['/shop/shop-details', big_item_1?.id]">
+                  <img [src]="big_item_1?.img" alt="product-img">
+                </a>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="col-lg-6 col-lg-6">
+          <div class="row">
+            <div class="col-lg-12">
+              <div class="product__big-image effectThree mb-40">
+                <a [routerLink]="['/shop/shop-details', big_item_2?.id]">
+                  <img [src]="big_item_2?.img" alt="product-img">
+                </a>
+              </div>
+            </div>
+            <div class="col-lg-12">
+              <div class="row">
+                @for (item of sm_best_prd.slice(2,4); track item.id;) {
+                  <div class="col-xl-6 col-lg-12 col-md-6">
+                    <app-product-item-two [product]="item"></app-product-item-two>
+                  </div>
+                }
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <!-- product__view-area end -->
+
+  <!-- video__area start -->
+  <div class="video__area-df" style="background-image: url(/assets/img/bg/bg-video.webp)">
+    <div class="container">
+      <div class="video__content text-center">
+        <div class="video__button mb-60">
+          <a (click)="utilsService.playVideo('9ykYqS63Go0')" class="cursor-pointer">
+            <i class="fas fa-play"></i>
+          </a>
+        </div>
+        <h5 class="video__title">AWESOME VIDEO LIGHTBOX </h5>
+        <p>Investigationes demonstraverunt lectores legere me lius quod ii legunt saepius. </p>
+      </div>
+    </div>
+  </div>
+  <!-- video__area end -->
+
+  <!-- product__slider-area start -->
+  <div class="product__slider-area pt-95 pb-60">
+    <div class="container custom-container-2">
+      <div class="row">
+        <div class="col-xl-12">
+          <div class="section__wrapper text-center">
+            <h3 class="section__title-2"><span>FEATURED PRODUCTS</span></h3>
+            <p>Claritas est etiam processus dynamicus, qui sequitur.</p>
+          </div>
+        </div>
+      </div>
+      <div class="row mt-40">
+        <div class="col-lg-12">
+          <div class="product_slider p-relative" #productSliderContainer>
+            <div class="product__slider-active swiper-container">
+              <div class="swiper-wrapper product__slider-item">
+                @for (item of sm_best_prd; track item.id;) {
+                  <div class="swiper-slide">
+                    <app-product-item-two [product]="item"></app-product-item-two>
+                  </div>
+                }
+              </div>
+            </div>
+            <div class="owl-nav">
+              <div class="owl-prev" (click)="productSliderInstance?.slidePrev()">
+                <button>
+                  <i class="fal fa-angle-left"></i>
+                </button>
+              </div>
+              <div class="owl-next" (click)="productSliderInstance?.slideNext()">
+                <button>
+                  <i class="fal fa-angle-right"></i>
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <!-- product__slider-area end -->
+
+  <!-- testimonial start -->
+  <app-home-seven-testimonial></app-home-seven-testimonial>
+  <!-- testimonial end -->
+
+  <!-- blog__slider-area start -->
+  <div class="blog__slider-area pt-100 pb-100">
+    <div class="container custom-container-2">
+      <div class="row">
+        <div class="col-xl-12">
+          <div class="row">
+            <div class="col-xl-12">
+              <div class="section__wrapper text-center">
+                <h3 class="section__title-2"><span> From Our Blog </span></h3>
+                <p>Update The Latest Fashion Trends in The World</p>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="row mt-40">
+        <div class="col-xl-12">
+          <div class="blog_slider">
+            <div class="blog_slider-area p-relative">
+              <div class="blog__slider-active swiper-container" #blogSliderContainer>
+                <div class="swiper-wrapper">
+                  @for (blog of blog_items; track blog.id) {
+                    <div class="blog__slider-item swiper-slide">
+                      <div class="blog-thumb m-img">
+                        <img [src]="blog.img" alt="blog-img">
+                        <a class="btn" [routerLink]="['/pages/blog-details', blog.id]">
+                          <i class="fa fa-link"></i>
+                        </a>
+                      </div>
+                      <div class="blog__post-content">
+                        <div class="blog__wrapper">
+                          <h5 class="blog__post-title">
+                            <a [routerLink]="['/pages/blog-details', blog.id]">{{blog.title}}</a>
+                          </h5>
+                          <div class="article-meta d-flex justify-content-center">
+                            <span class="article-author"><span>By</span> {{blog.author}}</span>
+                            <span> /</span>
+                            <span class="article-publish">
+                              <i class="fa fa-calendar-o"></i>
+                              {{blog.date}}
+                            </span>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                  }
+                </div>
+              </div>
+              <div class="owl-nav">
+                <div class="owl-prev" (click)="blogSliderInstance?.slidePrev()">
+                  <button><i class="fal fa-angle-left"></i></button>
+                </div>
+                <div class="owl-next" (click)="blogSliderInstance?.slideNext()">
+                  <button><i class="fal fa-angle-right"></i></button>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <!-- blog__slider-area end -->
+
+  <!-- brand__area start -->
+  <div class="brand__area pb-90">
+    <div class="container custom-container-2">
+      <div class="client_slider p-relative">
+        <div class="brand__slider-active swiper-container" #brandSliderContainer>
+          <div class="swiper-wrapper">
+            @for (logo of client_logos; track $index) {
+              <div class="brand__slider-item swiper-slide">
+                <div class="brand__image">
+                  <img [src]="logo" alt="logo">
+                </div>
+              </div>
+            }
+          </div>
+        </div>
+        <div class="owl-nav">
+          <div class="owl-prev"  (click)="brandSliderInstance?.slidePrev()">
+            <button><i class="fal fa-angle-left"></i></button>
+          </div>
+          <div class="owl-next"  (click)="brandSliderInstance?.slideNext()">
+            <button><i class="fal fa-angle-right"></i></button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <!-- brand__area end -->
+
+</main>
+
+
+<!-- footer start -->
+<app-footer-three></app-footer-three>
+<!-- footer end -->
+
+
+<!-- video popup start -->
+<app-video-popup></app-video-popup>
+<!-- video popup end -->

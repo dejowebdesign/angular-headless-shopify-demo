@@ -1,0 +1,20 @@
+<section [ngClass]="{'subscribe__area': true,'grey-bg': style_2,'box-m-15': style_2,'pb-100': true,'p-relative': style_3}">
+  <div [ngClass]="style_3 ? 'custom-container' : 'container'">
+    <div [ngClass]="style_2 ? 'subscribe__inner subscribe__inner-2 pt-120' : 'subscribe__inner pt-95'">
+      <div class="row">
+        <div class="col-xl-8 offset-xl-2 col-lg-8 offset-lg-2">
+          <div class="subscribe__content text-center">
+            <h2>Get Discount Info</h2>
+            <p>Subscribe to the Outstock mailing list to receive updates on new arrivals, special offers, and other discount information.</p>
+            <div class="subscribe__form">
+              <form (ngSubmit)="handleFormSubmit()">
+                <input required type="email" name="email" [(ngModel)]="inputVal" placeholder="Subscribe to our newsletter...">
+                <button class="os-btn os-btn-2 os-btn-3" type="submit">subscribe</button>
+              </form>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>

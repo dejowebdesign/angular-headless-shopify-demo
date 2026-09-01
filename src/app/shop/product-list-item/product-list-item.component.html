@@ -1,0 +1,70 @@
+<div class="product__wrapper mb-40">
+  <div class="row">
+    <div class="col-xl-4 col-lg-4">
+      <div class="product__thumb">
+        <a [routerLink]="['/shop/shop-details', product.id]" class="w-img">
+          <img [src]="product.img" alt="product-img">
+          <img class="product__thumb-2" [src]="product.thumb_img" alt="product-img">
+        </a>
+        @if (product.discount || product.new) {
+          <div class="product__sale">
+            @if (product.new || product.discount) {
+              <span class="new">new</span>
+            }
+            @if (product.discount) {
+              <span class="percent">-{{ product.discount }}%</span>
+            }
+          </div>
+        }
+      </div>
+    </div>
+    <div class="col-xl-8 col-lg-8">
+      <div class="product__content p-relative">
+        <div class="product__content-inner list">
+          <h4><a [routerLink]="['/shop/shop-details', product.id]">{{product.title}}</a></h4>
+          <div class="product__price-2 mb-10">
+            <span>${{product.price.toFixed(2)}}</span>
+            @if (product.old_price) {
+              <span class="old-price">${{product.old_price.toFixed(2)}}</span>
+            }
+          </div>
+          <p>{{product.sm_desc}}</p>
+          <div class="product__list mb-30">
+            <ul>
+              @for (list of product.details.details_list.slice(0,3); track $index) {
+                <li>
+                  <span>{{list}}</span>
+                </li>
+              }
+            </ul>
+          </div>
+        </div>
+        <div class="add-cart-list d-sm-flex align-items-center">
+          @if (!isItemInCart(product)) {
+            <a (click)="addToCart(product)" class="add-cart-btn mr-10 cursor-pointer"> <i class="fal fa-plus"></i>
+            Add to Cart
+          </a>
+        }
+        @if (isItemInCart(product)) {
+          <a routerLink="/shop/cart" class="add-cart-btn mr-10 cursor-pointer">
+            View cart
+          </a>
+        }
+        <div class="product__action-2 transition-3 mr-20">
+          <a (click)="addToWishlist(product)" class="cursor-pointer" [class.active]="isItemInWishlist(product)" data-bs-toggle="tooltip" data-bs-placement="top" title="Add to Wishlist">
+            <i class="fal fa-heart"></i>
+          </a>
+          <a (click)="addToCompare(product)" class="cursor-pointer" [class.active]="isItemInCompare(product)" data-bs-toggle="tooltip" data-bs-placement="top" title="Compare">
+            <i class="fal fa-sliders-h"></i>
+          </a>
+          <!-- Button trigger modal -->
+          <a class="cursor-pointer" data-bs-toggle="modal" [attr.data-bs-target]="'#' + utilsService.modalId" (click)="utilsService.handleOpenModal('product-modal-' + product.id, product)">
+            <i class="fal fa-search"></i>
+          </a>
+        </div>
+      </div>
+      <!-- shop modal start -->
+    </div>
+  </div>
+</div>
+</div>

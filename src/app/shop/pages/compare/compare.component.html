@@ -1,0 +1,114 @@
+<!-- header start -->
+<app-header-one [transparent]="true" [white_bg]="true"></app-header-one>
+<!-- header end -->
+
+<main>
+
+  <!-- breadcrumb start -->
+  <app-breadcrumb-one title="Compare" subtitle="Compare"></app-breadcrumb-one>
+  <!-- breadcrumb end -->
+
+  <!-- compare Area Start-->
+  <section class="compare__area pt-120 pb-120">
+    <div class="container">
+      <div class="row">
+        <div class="col-xl-12">
+
+          @if (compareService.getCompareProducts().length === 0) {
+            <div class='text-center'>
+              <h3>No Compare product</h3>
+              <a class="os-btn os-btn-black mt-20" routerLink="/shop">
+                Shop Now
+              </a>
+            </div>
+          }
+          @if (compareService.getCompareProducts().length > 0) {
+            <div class="tp-compare-table text-center">
+              <table class="table table-responsive">
+                <tbody>
+                  <tr>
+                    <th>Product</th>
+                    @for (item of compareService.getCompareProducts(); track $index) {
+                      <td>
+                        <div class="tp-compare-thumb">
+                          <img [src]="item.img" alt="">
+                          <h4 class="tp-compare-product-title">
+                            <a href="#" [innerHTML]="item.title"></a>
+                          </h4>
+                        </div>
+                      </td>
+                    }
+                  </tr>
+                  <tr>
+                    <th>Description</th>
+                    @for (item of compareService.getCompareProducts(); track $index) {
+                      <td>
+                        <div class="tp-compare-desc">
+                          <p>{{item.sm_desc}}</p>
+                        </div>
+                      </td>
+                    }
+                  </tr>
+                  <tr>
+                    <th>Price</th>
+                    @for (item of compareService.getCompareProducts(); track $index) {
+                      <td>
+                        <div class="tp-compare-price">
+                          <span>${{item.price.toFixed(2)}}</span>
+                          <span v-if="item.old_price" class="old-price">${{item.old_price}}</span>
+                        </div>
+                      </td>
+                    }
+                  </tr>
+                  <tr>
+                    <th>Add to cart</th>
+                    @for (item of compareService.getCompareProducts(); track $index) {
+                      <td>
+                        <div class="tp-compare-add-to-cart">
+                          <a (click)="cartService.addCartProduct(item)" class="os-btn os-btn-black cursor-pointer">Add to Cart</a>
+                        </div>
+                      </td>
+                    }
+                  </tr>
+                  <tr>
+                    <th>Rating</th>
+                    @for (item of compareService.getCompareProducts(); track $index) {
+                      <td>
+                        <div class="tp-compare-rating">
+                          <span><i class="fas fa-star"></i></span>
+                          <span><i class="fas fa-star"></i></span>
+                          <span><i class="fas fa-star"></i></span>
+                          <span><i class="fas fa-star"></i></span>
+                          <span><i class="fas fa-star"></i></span>
+                          <strong class="mx-2">{{item.rating}}</strong>
+                        </div>
+                      </td>
+                    }
+                  </tr>
+                  <tr>
+                    <th>Remove</th>
+                    @for (item of compareService.getCompareProducts(); track $index) {
+                      <td>
+                        <div class="tp-compare-remove">
+                          <button (click)="compareService.removeCompare(item)" class="cursor-pointer">
+                            <i class="fal fa-trash-alt"></i>
+                          </button>
+                        </div>
+                      </td>
+                    }
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+          }
+
+        </div>
+      </div>
+    </div>
+  </section>
+  <!-- compare Area End-->
+</main>
+
+<!-- footer start -->
+<app-footer-one></app-footer-one>
+<!-- footer end -->

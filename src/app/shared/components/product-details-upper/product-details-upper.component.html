@@ -1,0 +1,151 @@
+<div class="row">
+  <div [ngClass]="style_2 ? 'col-xl-5 col-lg-5 col-md-6 col-sm-12 col-12' : 'col-xl-6 col-lg-6'">
+
+    @if (!style_2) {
+      <div class="product__modal-box d-flex">
+        <div class="product__modal-nav mr-20">
+          <nav>
+            <div class="nav nav-tabs" id="product-details" role="tablist">
+              @for (img of product.related_images; track $index) {
+                <a class="nav-item nav-link mb-1 cursor-pointer"
+                  [class.active]="img === productService.activeImg">
+                  <div class="product__nav-img w-img" (click)="productService.handleImageActive(img)">
+                    <img [src]="img" alt="product-img" style="width: 92px;height: 117px;">
+                  </div>
+                </a>
+              }
+            </div>
+          </nav>
+        </div>
+        <div class="mb-20">
+          <div class="product__modal-img product__thumb w-img">
+            <img [src]="productService.activeImg" alt="product-img">
+            @if (product.discount || product.new) {
+              <div class="product__sale">
+                @if (product.new || product.discount) {
+                  <span class="new">new</span>
+                }
+                @if (product.discount) {
+                  <span class="percent">-{{ product.discount }}%</span>
+                }
+              </div>
+            }
+          </div>
+        </div>
+      </div>
+    }
+
+    @if (style_2) {
+      <div class="product__modal-box">
+        <div class="mb-20">
+          <div class="product__modal-img w-img">
+            <img [src]="productService.activeImg" alt="product-img">
+          </div>
+        </div>
+        <nav>
+          <div class="nav nav-tabs" id="product-details" role="tablist">
+            @for (img of product.related_images; track $index) {
+              <a class="nav-item nav-link cursor-pointer me-2"
+                [class.active]="img === productService.activeImg">
+                <div class="product__nav-img w-img" (click)="productService.handleImageActive(img)">
+                  <img [src]="img" alt="product-img" style="width: 92px;height: 117px;">
+                </div>
+              </a>
+            }
+          </div>
+        </nav>
+      </div>
+    }
+
+  </div>
+
+  <div [ngClass]="style_2 ? 'col-xl-7 col-lg-7 col-md-6 col-sm-12 col-12' : 'col-xl-6 col-lg-6'">
+    <div class="product__modal-content product__modal-content-2">
+      <h4><a [routerLink]="['/shop/shop-details', product.id]">{{product.title}}</a></h4>
+      <div class="rating rating-shop mb-15">
+        <ul>
+          <li><span><i class="fas fa-star"></i></span></li>
+          <li><span><i class="fas fa-star"></i></span></li>
+          <li><span><i class="fas fa-star"></i></span></li>
+          <li><span><i class="fas fa-star"></i></span></li>
+          <li><span><i class="fal fa-star"></i></span></li>
+        </ul>
+        <span class="rating-no ml-10 rating-left">
+          {{product.reviews.length}} rating(s)
+        </span>
+        <span class="review rating-left"><a href="#">Add your Review</a></span>
+      </div>
+      <div class="product__price-2 mb-25">
+        <span>${{product.price.toFixed(2)}}</span>
+        @if (product.old_price) {
+          <span class="old-price">${{product.old_price.toFixed(2)}}</span>
+        }
+      </div>
+      <div class="product__modal-des mb-30">
+        <p>{{product.sm_desc}}</p>
+      </div>
+      <div class="product__modal-form mb-30">
+        <form action="#">
+          <div class="product__modal-input size mb-20">
+            <label>Size <i class="fas fa-star-of-life"></i></label>
+            <select>
+              <option>- Please select -</option>
+              @for (size of product.sizes; track $index) {
+                <option>{{size}}</option>
+              }
+            </select>
+          </div>
+          <div class="product__modal-input color mb-20">
+            <label>Color <i class="fas fa-star-of-life"></i></label>
+            <select>
+              <option>- Please select -</option>
+              @for (clr of product.colors; track $index) {
+                <option>{{clr}}</option>
+              }
+            </select>
+          </div>
+          <div class="product__modal-required mb-5">
+            <span>Repuired Fiields *</span>
+          </div>
+          <div class="pro-quan-area d-sm-flex align-items-center">
+            <div class="product-quantity-title">
+              <label>Quantity</label>
+            </div>
+            <div class="product-quantity mr-20 mb-20">
+              <div class="cart-plus-minus">
+                <input type="text" [value]="cartService.orderQuantity" disabled readonly />
+                <div (click)="cartService.decrement()" class="dec qtybutton">-</div>
+                <div (click)="cartService.increment()" class="inc qtybutton">+</div>
+              </div>
+            </div>
+            <div class="pro-cart-btn">
+              <a (click)="cartService.addCartProduct(product)" class="add-cart-btn mb-20 cursor-pointer">
+                + Add to Cart
+              </a>
+            </div>
+          </div>
+        </form>
+      </div>
+
+      @if (bottomShow) {
+        <div>
+          <div class="product__tag mb-25">
+            <span>Category:</span>
+            <span><a class="cursor-pointer">{{product.category}}</a></span>
+          </div>
+          <div class="product__share">
+            <span>Share :</span>
+            <ul>
+              <li><a href="#"><i class="fab fa-facebook-f"></i></a></li>
+              <li><a href="#"><i class="fab fa-twitter"></i></a></li>
+              <li><a href="#"><i class="fab fa-behance"></i></a></li>
+              <li><a href="#"><i class="fab fa-linkedin-in"></i></a></li>
+              <li><a href="#"><i class="fab fa-youtube"></i></a></li>
+            </ul>
+          </div>
+        </div>
+      }
+
+    </div>
+  </div>
+</div>

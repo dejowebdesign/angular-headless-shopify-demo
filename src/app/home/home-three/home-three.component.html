@@ -1,0 +1,150 @@
+<!-- header start -->
+<app-header-one [header_big]="true"></app-header-one>
+<!-- header end -->
+
+<main>
+  <div class="box-25">
+
+    <!--hero slider area start -->
+    <app-hero-slider-two></app-hero-slider-two>
+    <!--hero slider area end -->
+
+    <!-- shop category start -->
+    <app-shop-category [style_2]="true"></app-shop-category>
+    <!-- shop category end -->
+
+    <!-- product area start -->
+    <section class="product__area pt-60 pb-65">
+      <div class="container">
+        <div class="row">
+          <div class="col-xl-12">
+            <div class="section__title-wrapper text-center mb-55">
+              <div class="section__title mb-10">
+                <h2>Trending Products</h2>
+              </div>
+              <div class="section__sub-title">
+                <p>Mirum est notare quam littera gothica quam nunc putamus parum claram!</p>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="container">
+        <div class="row">
+          <div class="col-xl-6 col-lg-6">
+            <div class="product__slider-3">
+              <div class="row">
+                @for (item of trending_products.slice(0,2); track item.id;) {
+                  <div class="col-lg-6 col-md-6 product__item">
+                    <app-product-item [product]="item"></app-product-item>
+                  </div>
+                }
+              </div>
+            </div>
+            <div class="product__banner mb-30">
+              <a [routerLink]="['/shop/shop-details', big_item_2?.id]" class="w-img">
+                <img [src]="big_item_2?.big_img" alt="product_img">
+              </a>
+            </div>
+          </div>
+          <div class="col-xl-6 col-lg-6">
+            <div class="product__banner w-img pb-25 mb-30 p-relative">
+              <a [routerLink]="['/shop/shop-details', big_item_1?.id]" class="w-img">
+                <img [src]="big_item_1?.big_img" alt="product_img">
+              </a>
+              <div class="product__banner-content p-absolute">
+                <h4>
+                  <a [routerLink]="['/shop/shop-details', big_item_1?.id]">
+                    <span [innerHTML]="big_item_1?.title"></span>
+                  </a>
+                </h4>
+                <a [routerLink]="['/shop/shop-details', big_item_1?.id]" class="link-btn">
+                  discover now
+                </a>
+              </div>
+            </div>
+            <div class="product__slider-3">
+              <div class="row">
+                @for (item of trending_products.slice(2,4); track item.id;) {
+                  <div class="col-lg-6 col-md-6 product__item">
+                    <app-product-item [product]="item"></app-product-item>
+                  </div>
+                }
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+    <!-- product area end -->
+
+    <!-- shop banner area start -->
+    <app-product-banner [style_2]="true"></app-product-banner>
+    <!-- shop banner area end -->
+
+    <!-- sale of products start -->
+    <app-sale-of-products></app-sale-of-products>
+    <!-- sale of products end -->
+
+    <!-- testimonial start -->
+    <app-home-three-testimonial></app-home-three-testimonial>
+    <!-- testimonial end -->
+
+    <!-- product offer area start -->
+    <section class="product__offer pt-115 pb-50">
+      <div class="container">
+        <app-offer-sm-product-slider></app-offer-sm-product-slider>
+      </div>
+    </section>
+    <!-- product offer area end -->
+
+
+    <!-- client slider area start -->
+    <section class="client__area">
+      <div class="container">
+        <div class="row">
+          <div class="col-xl-12">
+            <div class="pt-80 pb-80 border-top-1">
+              <app-client-slider></app-client-slider>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+    <!-- client slider area end -->
+
+    <!-- subscribe area start -->
+    <app-subscribe-area [style_2]="true"></app-subscribe-area>
+    <!-- subscribe area end -->
+
+    <!-- blog slider start -->
+    <section class="blog__area pt-90 pb-70">
+      <div class="container">
+        <div class="row">
+          <div class="col-xl-12">
+            <div class="section__title-wrapper text-center mb-55">
+              <div class="section__title mb-10">
+                <h2>Our Blog Posts</h2>
+              </div>
+              <div class="section__sub-title">
+                <p>Mirum est notare quam littera gothica quam nunc putamus parum claram!</p>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="row">
+          <div class="col-xl-12">
+            <app-blog-slider></app-blog-slider>
+          </div>
+        </div>
+      </div>
+    </section>
+    <!-- blog slider end -->
+  </div>
+</main>
+
+<!-- footer start -->
+<div class="box-25 box-m-15 box-pb-40">
+  <app-footer-one></app-footer-one>
+</div>
+<!-- footer end -->

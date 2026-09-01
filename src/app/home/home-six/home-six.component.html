@@ -1,0 +1,141 @@
+<!-- header start -->
+<app-header-three></app-header-three>
+<!-- header end -->
+
+<main>
+  <!-- slider area start -->
+  <section class="slider__area slider__area-2 p-relative">
+    <div class="slider-active swiper-container" #heroSliderContainer>
+      <div class="swiper-wrapper">
+        @for (item of hero_slider_data; track item.id) {
+          <div class="single-slider single-slider-2 slider__height-5 d-flex align-items-center swiper-slide" [style.backgroundImage]="'url(' + item.bgImg + ')'">
+            <div class="container">
+              <div class="row">
+                <div class="col-xl-6 col-lg-6 col-md-8 col-sm-10 col-12">
+                  <div class="slider__content">
+                    <h2 [innerHTML]="item.title"></h2>
+                    <p>{{item.subtitle}}</p>
+                    <a href="#" class="os-btn os-btn-2">Discover now</a>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        }
+      </div>
+      <div class="tp-slider-dot tp-swiper-dot"></div>
+    </div>
+  </section>
+  <!-- slider area end -->
+
+  <!-- category area start -->
+  <app-shop-category [style_4]="true"></app-shop-category>
+  <!-- category area end -->
+
+  <!-- product area start -->
+  <section class="product__area pt-60 pb-65">
+    <div class="container">
+      <div class="row">
+        <div class="col-xl-12">
+          <div class="section__title-wrapper text-center mb-55">
+            <div class="section__title mb-10">
+              <h2>Trending Products</h2>
+            </div>
+            <div class="section__sub-title">
+              <p>Mirum est notare quam littera gothica quam nunc putamus parum claram!</p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="container">
+      <div class="row">
+        <div class="col-xl-6 col-lg-6">
+          <div class="product__slider-3">
+            <div class="row">
+              @for (item of trending_products.slice(0,2); track item.id;) {
+                <div class="col-lg-6 col-md-6 product__item">
+                  <app-product-item [product]="item"></app-product-item>
+                </div>
+              }
+            </div>
+          </div>
+          <div class="product__banner mb-30">
+            <a [routerLink]="['/shop/shop-details', big_item_2?.id]" class="w-img">
+              <img [src]="big_item_2?.big_img" alt="product_img">
+            </a>
+          </div>
+        </div>
+
+        <div class="col-xl-6 col-lg-6">
+          <div class="product__banner w-img pb-25 mb-30 p-relative">
+            <a [routerLink]="['/shop/shop-details', big_item_1?.id]" class="w-img">
+              <img [src]="big_item_1?.big_img" alt="product_img">
+            </a>
+            <div class="product__banner-content p-absolute">
+              <h4>
+                <a [routerLink]="['/shop/shop-details', big_item_1?.id]">
+                  <span [innerHTML]="big_item_1?.title"></span>
+                </a>
+              </h4>
+              <a [routerLink]="['/shop/shop-details', big_item_1?.id]" class="link-btn">
+                discover now
+              </a>
+            </div>
+          </div>
+          <div class="product__slider-3">
+            <div class="row">
+              @for (item of trending_products.slice(2,4); track item.id;) {
+                <div class="col-lg-6 col-md-6 product__item">
+                  <app-product-item [product]="item"></app-product-item>
+                </div>
+              }
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+  <!-- product area end -->
+
+  <!-- shop banner start -->
+  <app-product-banner></app-product-banner>
+  <!-- shop banner end -->
+
+  <!-- sale of products start -->
+  <app-sale-of-products></app-sale-of-products>
+  <!-- sale of products end -->
+
+  <!-- blog area start -->
+  <section class="blog__area pb-70">
+    <div class="container">
+      <div class="row">
+        <div class="col-xl-12">
+          <div class="section__title-wrapper text-center mb-55">
+            <div class="section__title mb-10">
+              <h2>Our Blog Posts</h2>
+            </div>
+            <div class="section__sub-title">
+              <p>Mirum est notare quam littera gothica quam nunc putamus parum claram!</p>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="row">
+        <div class="col-xl-12">
+          <app-blog-slider></app-blog-slider>
+        </div>
+      </div>
+    </div>
+  </section>
+  <!-- blog area end -->
+
+  <!-- subscribe area start -->
+  <app-subscribe-area></app-subscribe-area>
+  <!-- subscribe area end -->
+</main>
+
+
+<!-- footer start -->
+<app-footer-one></app-footer-one>
+<!-- footer end -->

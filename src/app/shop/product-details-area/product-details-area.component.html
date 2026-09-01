@@ -1,0 +1,132 @@
+<section class="shop__area pb-65">
+  <div class="shop__top grey-bg-6 pt-100 pb-90">
+    <div class="container">
+      <app-product-details-upper [product]="product!"></app-product-details-upper>
+    </div>
+  </div>
+  <div class="shop__bottom">
+    <div class="container">
+      <div class="row">
+        <div class="col-xl-12">
+          <div class="product__details-tab">
+            <div class="product__details-tab-nav text-center mb-45">
+              <nav>
+                <div class="nav nav-tabs justify-content-start justify-content-sm-center" id="pro-details" role="tablist">
+                  <a class="nav-item nav-link active" id="des-tab" data-bs-toggle="tab" href="#des" role="tab" aria-controls="des" aria-selected="true">Description</a>
+                  <a class="nav-item nav-link" id="add-tab" data-bs-toggle="tab" href="#add" role="tab"
+                  aria-controls="add" aria-selected="false">Additional Information</a>
+                  <a class="nav-item nav-link" id="review-tab" data-bs-toggle="tab" href="#review" role="tab" aria-controls="review" aria-selected="false">Reviews ({{product?.reviews?.length}})</a>
+                </div>
+              </nav>
+            </div>
+            <div class="tab-content" id="pro-detailsContent">
+              <div class="tab-pane fade show active" id="des" role="tabpanel">
+                <div class="product__details-des">
+                  <p>{{product?.details?.details_text}}</p>
+                  <div class="product__details-des-list mb-20">
+                    <ul>>
+                      @for (list of product?.details?.details_list; track $index) {
+                        <li>
+                          <span>{{list}}</span>
+                        </li>
+                      }
+                    </ul>
+                  </div>
+                  <p>{{product?.details?.details_text_2}}</p>
+                </div>
+              </div>
+              <div class="tab-pane fade" id="add" role="tabpanel">
+                <div class="product__details-add">
+                  <ul>
+                    <li><span>Weight</span></li>
+                    <li><span>.25 KG</span></li>
+                    <li><span>Dimention</span></li>
+                    <li><span>62 × 56 × 12 cm</span></li>
+                    <li><span>Size</span></li>
+                    <li><span>XL, XXL, LG, SM, MD</span></li>
+                  </ul>
+                </div>
+              </div>
+              <div class="tab-pane fade" id="review" role="tabpanel">
+                <div class="product__details-review">
+                  <div class="postbox__comments">
+                    <div class="postbox__comment-title mb-30">
+                      <h3>Reviews ({{product?.reviews?.length}})</h3>
+                    </div>
+                    <div class="latest-comments mb-30">
+                      <ul>
+                        @for (r of product?.reviews; track $index) {
+                          <li>
+                            <div class="comments-box">
+                              <div class="comments-avatar">
+                                <img [src]="r.img" alt="user">
+                              </div>
+                              <div class="comments-text">
+                                <div class="avatar-name">
+                                  <h5>{{r.name}}</h5>
+                                  <span> - {{r.time}} </span>
+                                </div>
+                                <div class="user-rating">
+                                  <ul>
+                                    <li><a href="#"><i class="fas fa-star"></i></a></li>
+                                    <li><a href="#"><i class="fas fa-star"></i></a></li>
+                                    <li><a href="#"><i class="fas fa-star"></i></a></li>
+                                    <li><a href="#"><i class="fas fa-star"></i></a></li>
+                                    <li><a href="#"><i class="fal fa-star"></i></a></li>
+                                  </ul>
+                                </div>
+                                <p>{{r.review_desc}}</p>
+                              </div>
+                            </div>
+                          </li>
+                        }
+                      </ul>
+                    </div>
+                  </div>
+                  <div class="post-comments-form mb-100">
+                    <div class="post-comments-title mb-30">
+                      <h3>Your Review</h3>
+                      <div class="post-rating">
+                        <span>Your Rating :</span>
+                        <ul>
+                          <li>
+                            <a href="#">
+                              <i class="fal fa-star"></i>
+                            </a>
+                          </li>
+                          <li>
+                            <a href="#">
+                              <i class="fal fa-star"></i>
+                            </a>
+                          </li>
+                          <li>
+                            <a href="#">
+                              <i class="fal fa-star"></i>
+                            </a>
+                          </li>
+                          <li>
+                            <a href="#">
+                              <i class="fal fa-star"></i>
+                            </a>
+                          </li>
+                          <li>
+                            <a href="#">
+                              <i class="fal fa-star"></i>
+                            </a>
+                          </li>
+                        </ul>
+                      </div>
+                    </div>
+                    <!-- review form start -->
+                    <app-review-form></app-review-form>
+                    <!-- review form end -->
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>

@@ -1,0 +1,29 @@
+<div class="sidebar__widget mb-55">
+  <div class="sidebar__widget-title mb-30">
+    <h3>Filter By Price</h3>
+  </div>
+  <div class="sidebar__widget-content">
+    <div class="price__slider">
+      <div id="slider-range">
+        @if (isBrowser) {
+          <ngx-slider
+            [(value)]="min"
+            [(highValue)]="max"
+            [options]="options"
+            (userChangeEnd)="appliedFilter($event)"
+            >
+          </ngx-slider>
+        }
+      </div>
+      <div>
+        <div>
+          <button (click)="handlePriceRoute()">Filter</button>
+          <label for="amount">Price :</label>
+          <span class="input-range">
+            ${{ min }} - ${{ max }}
+          </span>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

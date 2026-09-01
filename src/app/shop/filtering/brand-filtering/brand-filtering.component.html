@@ -1,0 +1,22 @@
+<div class="sidebar__widget mb-50">
+  <div class="sidebar__widget-title mb-25">
+    <h3>Brand</h3>
+  </div>
+  <div class="sidebar__widget-content">
+    <div class="brand">
+      <ul>
+        @for (b of brands; track $index; let i = $index) {
+          <li>
+            <a
+              class="cursor-pointer"
+              (click)="handleBrand(b)"
+              [class.active]="b.toLowerCase() === brand"
+              >
+              {{ b }}
+            </a>
+          </li>
+        }
+      </ul>
+    </div>
+  </div>
+</div>

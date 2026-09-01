@@ -1,0 +1,24 @@
+<div class="features__product">
+  <ul>
+    @for (item of feature_products; track item.id) {
+      <li class="mb-20">
+        <div class="featires__product-wrapper d-flex">
+          <div class="features__product-thumb mr-15">
+            <a [routerLink]="['/shop/shop-details', item.id]">
+              <img [src]="item.img" alt="pro-sm-1" style="height: 110px;width: 86px;">
+            </a>
+          </div>
+          <div class="features__product-content">
+            <h5><a [routerLink]="['/shop/shop-details', item.id]">{{item.title}}</a></h5>
+            <div class="price">
+              <span>${{item.price}}</span>
+              @if (item.old_price) {
+                <span class="price-old">${{item.old_price}}</span>
+              }
+            </div>
+          </div>
+        </div>
+      </li>
+    }
+  </ul>
+</div>

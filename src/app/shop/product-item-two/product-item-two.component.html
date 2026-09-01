@@ -1,0 +1,40 @@
+<div class="product__item mb-40">
+  <div class="product__wrapper">
+    <div class="product__thumb">
+      <a [routerLink]="['/shop/shop-details', product.id]" class="w-img">
+        <img [src]="product.img" alt="product-img">
+        <img class="product__thumb-2" [src]="product.thumb_img" alt="product-img">
+      </a>
+      <div class="product__action-3 transition-3">
+        @if (!isItemInCart(product)) {
+          <a (click)="addToCart(product)" class="action-btn cursor-pointer"> <i class="fal fa-plus"></i>
+          Add to cart
+        </a>
+      }
+      @if (isItemInCart(product)) {
+        <a routerLink="/shop/cart" class="action-btn cursor-pointer"> <i class="fal fa-plus"></i>
+        View cart
+      </a>
+    }
+    <a class="cursor-pointer action-btn" data-bs-toggle="modal" [attr.data-bs-target]="'#' + utilsService.modalId" (click)="utilsService.handleOpenModal('product-modal-' + product.id, product)">
+      <i class="fal fa-eye"></i>
+    </a>
+  </div>
+</div>
+<div class="product__content product__content-2 p-relative text-center">
+  <div class="product__content-inner">
+    <div class="rating">
+      <a><i class="fal fa-star"></i></a>
+      <a><i class="fal fa-star"></i></a>
+      <a><i class="fal fa-star"></i></a>
+      <a><i class="fal fa-star"></i></a>
+      <a><i class="fal fa-star"></i></a>
+    </div>
+    <h4><a [routerLink]="['/shop/shop-details', product.id]">{{product.title}}</a></h4>
+    <div class="product__price-3">
+      <span>${{product.price.toFixed(2)}}</span>
+    </div>
+  </div>
+</div>
+</div>
+</div>

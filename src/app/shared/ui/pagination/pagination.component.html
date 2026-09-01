@@ -1,0 +1,26 @@
+<div class="basic-pagination">
+  @if (paginate.pages && paginate.pages.length) {
+    <ul>
+      <li [ngClass]="{ disabled: paginate.currentPage === 1 }">
+        <a (click)="pageSet(paginate.currentPage - 1)" class="cursor-pointer">
+          <i class="fal fa-angle-left"></i>
+        </a>
+      </li>
+      @for (page of paginate.pages; track page) {
+        <li [ngClass]="{ active: paginate.currentPage == page }">
+          <a
+            class="cursor-pointer"
+            (click)="pageSet(page)"
+            >
+            {{ page }}
+          </a>
+        </li>
+      }
+      <li [ngClass]="{ disabled: paginate.currentPage == paginate.totalPages }">
+        <a class="cursor-pointer" (click)="pageSet(paginate.currentPage + 1)">
+          <i class="fal fa-angle-right"></i>
+        </a>
+      </li>
+    </ul>
+  }
+</div>

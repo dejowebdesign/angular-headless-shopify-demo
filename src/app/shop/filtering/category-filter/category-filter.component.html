@@ -1,0 +1,47 @@
+<div class="sidebar__widget mb-55">
+  <div class="sidebar__widget-title mb-25">
+    <h3>Product Categories</h3>
+  </div>
+  <div class="sidebar__widget-content">
+    <div class="categories">
+      <div id="accordion">
+        @for (item of categoryData; track item.id; let i = $index) {
+          <div class="card" [attr.id]="'accordion-' + i">
+            <div class="card-header white-bg">
+              <h5 class="mb-0">
+                <button
+                  (click)="handleParentCategory(item.parentTitle)"
+                  [ngClass]="['shop-accordion-btn', 'collapsed', 'text-capitalize', (category === utilsService.convertToURL(item.parentTitle)) ? 'active' : '']"
+                  data-bs-toggle="collapse"
+                  [attr.data-bs-target]="'#collapse-' + i"
+                  aria-expanded="false"
+                  [attr.aria-controls]="'collapse-' + i"
+                  >
+                  {{ item.parentTitle.toLowerCase() }}
+                </button>
+              </h5>
+            </div>
+            <div [attr.id]="'collapse-' + i" class="collapse" [class.show]="category === utilsService.convertToURL(item.parentTitle)" [attr.aria-labelledby]="'accordion-' + i" data-bs-parent="#accordion">
+              <div class="card-body">
+                <div class="categories__list">
+                  <ul>
+                    @for (list of item.children; track list; let i = $index) {
+                      <li>
+                        <a
+                          (click)="handleSubCategory(list)"
+                          [ngClass]="['text-capitalize cursor-pointer', (subcategory === utilsService.convertToURL(list)) ? 'active' : '']"
+                          >
+                          {{ list.toLowerCase() }}
+                        </a>
+                      </li>
+                    }
+                  </ul>
+                </div>
+              </div>
+            </div>
+          </div>
+        }
+      </div>
+    </div>
+  </div>
+</div>

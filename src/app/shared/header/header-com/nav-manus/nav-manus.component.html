@@ -1,0 +1,34 @@
+<nav>
+  <ul>
+    @for (item of menu_data; track $index;) {
+      <li [ngClass]="getMenuClasses(item)">
+        <a [routerLink]="item.link">{{ item.title }}</a>
+        @if (item.hasDropdown && !item.megamenu) {
+          <ul class="submenu transition-3">
+            @for (menu of item.dropdownItems; track menu; let index = $index) {
+              <li>
+                <a [routerLink]="menu.link">{{ menu.title }}</a>
+              </li>
+            }
+          </ul>
+        }
+        @if (item.hasDropdown && item.megamenu) {
+          <ul class="submenu transition-3" [style.backgroundImage]="'url(' + bg + ')'">
+            @for (m_mnu of item.dropdownItems; track m_mnu; let index = $index) {
+              <li class="has-dropdown">
+                <a [routerLink]="m_mnu.link">{{ m_mnu.title }}</a>
+                <ul>
+                  @for (m of m_mnu.dropdownMenu; track m; let index = $index) {
+                    <li>
+                      <a [routerLink]="m.link">{{ m.title }}</a>
+                    </li>
+                  }
+                </ul>
+              </li>
+            }
+          </ul>
+        }
+      </li>
+    }
+  </ul>
+</nav>

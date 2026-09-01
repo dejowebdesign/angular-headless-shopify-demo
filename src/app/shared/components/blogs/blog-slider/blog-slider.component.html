@@ -1,0 +1,9 @@
+<div class="blog__slider swiper-container">
+  <div class="swiper-wrapper">
+    @for (blog of blogData; track blog.id) {
+      <div class="swiper-slide">
+        <app-blog-item [blog]="blog"></app-blog-item>
+      </div>
+    }
+  </div>
+</div>

@@ -1,0 +1,24 @@
+<!--hero slider area start -->
+<section class="slider__area slider__area-2 p-relative pl-15 pr-15">
+  <div class="slider-active swiper-container" #heroSliderContainer>
+    <div class="swiper-wrapper">
+      @for (item of hero_slider_data; track item.id) {
+        <div class="single-slider single-slider-2 slider__height-2 d-flex align-items-center swiper-slide" [style.backgroundImage]="'url(' + item.bgImg + ')'">
+          <div class="container-fluid">
+            <div class="row">
+              <div class="col-xl-6 col-lg-7 col-md-10 col-sm-10 col-12">
+                <div class="slider__content slider__content-3 pl-250" [class.slider__content-black]="item.isDark">
+                  <h2 [innerHTML]="item.title"></h2>
+                  <p>{{item.subtitle}}</p>
+                  <a href="#" [ngClass]="item.isDark ? 'os-btn-white' : 'os-btn-2'" class="os-btn">Discover now</a>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      }
+    </div>
+    <div class="tp-slider-dot-2"></div>
+  </div>
+</section>
+<!--hero slider area end -->

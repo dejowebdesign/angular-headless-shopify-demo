@@ -1,0 +1,18 @@
+<div class="blog__item" [ngClass]="getClass()">
+  <div class="blog__thumb fix">
+      <a [routerLink]="['/pages/blog-details', blog.id]" class="w-img">
+        <img [src]="blog.img" alt="blog">
+      </a>
+  </div>
+  <div class="blog__content">
+      <h4 [class.blog__title]="title_cls">
+        <a [routerLink]="['/pages/blog-details', blog.id]">{{blog.title}}</a>
+      </h4>
+      <div class="blog__meta">
+          <span>By <a href="#">{{blog.author}}</a></span>
+          <span>/ {{blog.date}}</span>
+      </div>
+      <p>A Capitalize on low hanging fruit to identify a ballpark value added activity to beta test. Override the digital divide with additional clickthroughs from DevOps. Nanotechnology immersion along the information highway will close the [...]</p>
+      <a [routerLink]="['/pages/blog-details', blog.id]" class="os-btn">read more</a>
+  </div>
+</div>

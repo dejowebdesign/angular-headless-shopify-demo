@@ -1,0 +1,22 @@
+<!-- header start -->
+<app-header-one [transparent]="true" [white_bg]="true"></app-header-one>
+<!-- header end -->
+
+<main>
+
+  <!-- breadcrumb start -->
+  <app-breadcrumb-one title="Product Details" subtitle="Product Details"></app-breadcrumb-one>
+  <!-- breadcrumb end -->
+
+  <!-- shop details area start -->
+  <app-product-details-area [product]="product"></app-product-details-area>
+  <!-- shop details area end -->
+
+  <!-- related products start -->
+  <app-related-products [brand]="product?.brand" [productId]="product?.id"></app-related-products>
+  <!-- related products end -->
+</main>
+
+<!-- footer start -->
+<app-footer-one></app-footer-one>
+<!-- footer end -->

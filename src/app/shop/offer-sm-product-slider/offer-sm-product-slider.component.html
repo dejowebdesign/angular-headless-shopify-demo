@@ -1,0 +1,114 @@
+<div class="row">
+  <div class="col-xl-4 col-lg-4 col-md-6">
+    <div class="product__offer-inner mb-30">
+      <div class="product__title mb-60">
+        <h4>Top Seller Products</h4>
+      </div>
+      <div class="product__offer-slider p-relative" >
+        <div class="trending_slider swiper-container" #trendingProductSliderContainer>
+          <div class="swiper-wrapper">
+            @for (products of trending_slider_products; track $index) {
+              <div class="product__offer-wrapper swiper-slide">
+                <div class="sidebar__widget-content">
+                  @for (item of products.products; track item.id) {
+                    <app-product-sm-item [product]="item"></app-product-sm-item>
+                  }
+                </div>
+              </div>
+            }
+          </div>
+        </div>
+        <!-- nav button -->
+        <div class="owl-nav">
+          <div class="owl-prev">
+            <button (click)="trendingSellInstance?.slidePrev()">
+              <i class="fal fa-angle-left"></i>
+            </button>
+          </div>
+          <div class="owl-next">
+            <button (click)="trendingSellInstance?.slideNext()">
+              <i class="fal fa-angle-right"></i>
+            </button>
+          </div>
+        </div>
+        <!-- nav button -->
+      </div>
+    </div>
+  </div>
+
+  <div class="col-xl-4 col-lg-4 col-md-6">
+    <div class="product__offer-inner mb-30">
+      <div class="product__title mb-60">
+        <h4>On Sale Products</h4>
+      </div>
+
+      <div class="product__offer-slider p-relative" >
+        <div class="on_sell_slider swiper-container" #onSellSliderContainer>
+          <div class="swiper-wrapper">
+            @for (products of discount_slider_products; track $index) {
+              <div class="product__offer-wrapper swiper-slide">
+                <div class="sidebar__widget-content">
+                  @for (item of products.products; track item.id) {
+                    <app-product-sm-item [product]="item"></app-product-sm-item>
+                  }
+                </div>
+              </div>
+            }
+          </div>
+        </div>
+        <!-- nav button -->
+        <div class="owl-nav">
+          <div class="owl-prev">
+            <button (click)="onSellInstance?.slidePrev()">
+              <i class="fal fa-angle-left"></i>
+            </button>
+          </div>
+          <div class="owl-next">
+            <button (click)="onSellInstance?.slideNext()">
+              <i class="fal fa-angle-right"></i>
+            </button>
+          </div>
+        </div>
+        <!-- nav button -->
+      </div>
+    </div>
+  </div>
+
+  <div class="col-xl-4 col-lg-4 col-md-6">
+    <div class="product__offer-inner mb-30">
+      <div class="product__title mb-60">
+        <h4>Top Rated Products</h4>
+      </div>
+      <div class="product__offer-slider p-relative" >
+        <div class="top_rated_slider swiper-container" #topRatedSellSliderContainer>
+          <div class="swiper-wrapper">
+            @for (products of top_rated_slider_products; track $index) {
+              <div class="product__offer-wrapper swiper-slide">
+                <div class="sidebar__widget-content">
+                  @for (item of products.products; track item.id) {
+                    <app-product-sm-item [product]="item"></app-product-sm-item>
+                  }
+                </div>
+              </div>
+            }
+          </div>
+        </div>
+        <!-- nav button -->
+        <div class="owl-nav">
+          <div class="owl-prev">
+            <button (click)="topRatedSellInstance?.slidePrev()">
+              <i class="fal fa-angle-left"></i>
+            </button>
+          </div>
+          <div class="owl-next">
+            <button (click)="topRatedSellInstance?.slideNext()">
+              <i class="fal fa-angle-right"></i>
+            </button>
+          </div>
+        </div>
+        <!-- nav button -->
+      </div>
+
+    </div>
+  </div>
+</div>

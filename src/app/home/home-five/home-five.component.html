@@ -1,0 +1,91 @@
+<!-- header start -->
+<app-header-two></app-header-two>
+<!-- header end -->
+
+<main>
+
+  <!-- slider area start -->
+  <section class="slider__area slider__area-3 p-relative">
+    <div class="slider-active swiper-container" #heroSliderContainer>
+      <div class="swiper-wrapper">
+        @for (item of hero_slider_data; track item.id) {
+          <div class="single-slider single-slider-2 slider__height-5 d-flex align-items-center swiper-slide" [style.backgroundImage]="'url(' + item.bgImg + ')'">
+            <div class="container-fluid">
+              <div class="row">
+                <div class="col-xl-6 col-lg-7 col-md-10">
+                  <div class="slider__content slider__content-3 pl-250">
+                    <h2>Handmade <br> Hand carved Coffee</h2>
+                    <p>As rich and unique as the coffee beans it is intended for, this little scoop will make your morning ritual a special occasion every day. </p>
+                    <a routerLink="/shop" class="os-btn os-btn-2">Discover now</a>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        }
+      </div>
+      <div class="tp-slider-dot tp-swiper-dot"></div>
+    </div>
+  </section>
+  <!-- slider area end -->
+
+  <!-- box start -->
+  <div class="box-25">
+
+    <!-- product area start -->
+    <section class="product__area pt-60 pb-100">
+      <div class="container-fluid">
+        <div class="row">
+          <div class="col-xl-12">
+            <div class="section__title-wrapper text-center mb-55">
+              <div class="section__title mb-10">
+                <h2>Trending Products</h2>
+              </div>
+              <div class="section__sub-title">
+                <p>Mirum est notare quam littera gothica quam nunc putamus parum claram!</p>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="row">
+          <div class="col-xl-12">
+            <div class="product__slider-4">
+              <div class="row row-cols-1 row-cols-sm-2 row-cols-md-3 row-cols-lg-5">
+                @for (item of trendingProducts.slice(0,perView); track item.id) {
+                  <div class="col">
+                    <app-product-item [product]="item"></app-product-item>
+                  </div>
+                }
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="row">
+          <div class="col-xl-12">
+            <div class="product__load-btn text-center mt-25">
+              @if (perView < trendingProducts.length) {
+                <a (click)="handlePerView()" class="os-btn os-btn-3 cursor-pointer">Load More</a>
+              }
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+    <!-- product area end -->
+
+    <!-- product banner start -->
+    <app-product-banner></app-product-banner>
+    <!-- product banner end -->
+
+    <!-- subscribe area start -->
+    <app-subscribe-area></app-subscribe-area>
+    <!-- subscribe area end -->
+
+  </div>
+  <!-- box end -->
+
+</main>
+
+<!-- footer start -->
+<app-footer-one></app-footer-one>
+<!-- footer end -->

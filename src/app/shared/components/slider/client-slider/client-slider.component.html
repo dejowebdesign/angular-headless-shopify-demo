@@ -1,0 +1,9 @@
+<div class="client__slider swiper-container text-center">
+  <div class="swiper-wrapper">
+    @for (logo of client_logos; track logo.id) {
+      <div class="client__thumb swiper-slide">
+        <a class="cursor-pointer"><img [src]="logo.logo" alt="client"></a>
+      </div>
+    }
+  </div>
+</div>

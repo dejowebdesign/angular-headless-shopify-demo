@@ -1,12 +1,9 @@
 import { Injectable } from '@angular/core';
-import { of,Observable } from 'rxjs';
-import { map } from 'rxjs/operators';
-import product_data from '../data/product-data';
+import { Observable } from 'rxjs';
+import { map, shareReplay, tap } from 'rxjs/operators';
 import { IProduct } from '../types/product-d-t';
-import blog_data from '../data/blog-data';
-import IBlogType from '../types/blog-d-t';
-
-const all_products = product_data;
+import { ShopifyStorefrontService } from './shopify-storefront.service';
+import { ProductMapperService } from './product-mapper.service';
 
 @Injectable({
   providedIn: 'root'
@@ -14,146 +11,144 @@ const all_products = product_data;
 export class ProductService {
   public filter_offcanvas: boolean = false;
   public pageSize: number = 9;
-
-  // Get Products
-  public get products(): Observable<IProduct[]> {
-    return of(product_data);
-  }
-
-  constructor() { }
-
-  activeImg: string | undefined;
+  public activeImg: string | undefined;
 
   handleImageActive(img: string) {
     this.activeImg = img;
   }
 
-  // Get Products By id
-  public getProductById(id: string): Observable<IProduct | undefined> {
-    return this.products.pipe(map(items => {
-      const product = items.find(p => Number(p.id) === Number(id));
-      if(product){
-        this.handleImageActive(product.img)
+  // GraphQL query – minimal fields needed for mapping
+  private static readonly GET_PRODUCTS_QUERY = `
+    query GetProducts($first: Int!) {
+      products(first: $first) {
+        edges {
+          node {
+            id
+            handle
+            title
+            description
+            vendor
+            productType
+            featuredImage { url altText }
+            images(first: 10) { edges { node { url altText } } }
+            variants(first: 20) {
+              edges {
+                node {
+                  id
+                  title
+                  price { amount currencyCode }
+                  compareAtPrice { amount currencyCode }
+                  availableForSale
+                  quantityAvailable
+                  selectedOptions { name value }
+                }
+              }
+            }
+          }
+        }
       }
-      return product;
-    }));
+    }
+  `;
+
+
+  // Cached observable of products from Shopify
+  private products$!: Observable<IProduct[]>;
+
+  constructor(
+    private storefront: ShopifyStorefrontService,
+    private mapper: ProductMapperService
+  ) {
+    this.products$ = this.storefront.execute<any>(ProductService.GET_PRODUCTS_QUERY, { first: 100 }).pipe(
+      map((res: any) => (res.products?.edges || []).map((e: any) => e.node)),
+      map((nodes: any[]) => nodes.map(node => this.mapper.map(node))),
+      tap(products => this.productCache = products), // keep cache for synchronous methods
+      shareReplay(1)
+
+    );
   }
-   // Get related Products
-   public getRelatedProducts(productId: number,brand:string): Observable<IProduct[]> {
-    return this.products.pipe(map(items => {
-      return items.filter(
-        (p) => p.brand.toLowerCase().includes(brand.toLowerCase()) &&
-          p.id !== Number(productId)
-      )
-    }));
+
+  // Public getter – unchanged signature
+  public get products(): Observable<IProduct[]> {
+    return this.products$;
   }
-  // Get max price
+
+  // Existing method – uses cached stream
+  public getProductById(id: string): Observable<IProduct | undefined> {
+    // Resolve from cached product stream to avoid extra network call
+    return this.products$.pipe(
+      map(products => products.find(p => p.id === Number(id))),
+      map(product => product ? product : undefined)
+    );
+  }
+
+  public getRelatedProducts(productId: number, brand: string): Observable<IProduct[]> {
+    return this.products$.pipe(
+      map(products => products.filter(p => p.brand.toLowerCase().includes(brand.toLowerCase()) && p.id !== productId))
+    );
+  }
+
+  public filterProducts(): Observable<IProduct[]> {
+    return this.products$;
+  }
+
+  // Synchronous methods – operate on already fetched data, unchanged
+  public sortProducts(products: IProduct[], payload: string): any {
+    if (payload === 'asc') {
+      return products.sort((a, b) => a.id - b.id);
+    } else if (payload === 'on-sale') {
+      return products.filter(p => p.discount! > 0);
+    } else if (payload === 'low') {
+      return products.sort((a, b) => a.price - b.price);
+    } else if (payload === 'high') {
+      return products.sort((a, b) => b.price - a.price);
+    }
+    return products;
+  }
+
+  private productCache: IProduct[] = [];
+
   public get maxPrice(): number {
-    const max_price = all_products.reduce((max, product) => {
-      return product.price > max ? product.price : max;
-    }, 0);
-    return max_price
+    // Calculate from cached product array; returns 0 if cache empty
+    if (this.productCache.length === 0) {
+      return 0;
+    }
+    return this.productCache.reduce((acc, p) => (p.price > acc ? p.price : acc), 0);
   }
-// shop filterSelect
+
   public filterSelect = [
     { value: 'asc', text: 'Default Sorting' },
-    { value: 'low', text: 'Low to Hight' },
+    { value: 'low', text: 'Low to High' },
     { value: 'high', text: 'High to Low' },
     { value: 'on-sale', text: 'On Sale' },
   ];
 
-    // Get Product Filter
-    public filterProducts(): Observable<IProduct[]> {
-      return this.products.pipe(map(product => {
-        return product;
-      }));
-    }
-
-
-      // Sorting Filter
-  public sortProducts(products: IProduct[], payload: string): any {
-
-    if(payload === 'asc') {
-      return products.sort((a, b) => {
-        if (a.id < b.id) {
-          return -1;
-        } else if (a.id > b.id) {
-          return 1;
-        }
-        return 0;
-      })
-    } else if (payload === 'sale') {
-      return products.filter((p) => p.discount! > 0)
-    } else if (payload === 'low') {
-      return products.sort((a, b) => {
-        if (a.price < b.price) {
-          return -1;
-        } else if (a.price > b.price) {
-          return 1;
-        }
-        return 0;
-      })
-    } else if (payload === 'high') {
-      return products.sort((a, b) => {
-        if (a.price > b.price) {
-          return -1;
-        } else if (a.price < b.price) {
-          return 1;
-        }
-        return 0;
-      })
-    }
-  }
-
-  /*
-    ---------------------------------------------
-    ------------- Product Pagination  -----------
-    ---------------------------------------------
-  */
   public getPager(totalItems: number, currentPage: number = 1, pageSize: number = 9) {
-    // calculate total pages
     let totalPages = Math.ceil(totalItems / pageSize);
-
-    // Paginate Range
-    let paginateRange = 3;
-
-    // ensure current page isn't out of range
-    if (currentPage < 1) {
-      currentPage = 1;
-    } else if (currentPage > totalPages) {
-      currentPage = totalPages;
-    }
-
+    if (currentPage < 1) { currentPage = 1; } else if (currentPage > totalPages) { currentPage = totalPages; }
     let startPage: number, endPage: number;
     if (totalPages <= 5) {
       startPage = 1;
       endPage = totalPages;
-    } else if(currentPage < paginateRange - 1){
+    } else if (currentPage < 3) {
       startPage = 1;
-      endPage = startPage + paginateRange - 1;
+      endPage = 3;
     } else {
       startPage = currentPage - 1;
-      endPage =  currentPage + 1;
+      endPage = currentPage + 1;
     }
-
-    // calculate start and end item indexes
-    let startIndex = (currentPage - 1) * pageSize;
-    let endIndex = Math.min(startIndex + pageSize - 1, totalItems - 1);
-
-    // create an array of pages to ng-repeat in the pager control
-    let pages = Array.from(Array((endPage + 1) - startPage).keys()).map(i => startPage + i);
-
-    // return object with all pager properties required by the view
+    const startIndex = (currentPage - 1) * pageSize;
+    const endIndex = Math.min(startIndex + pageSize - 1, totalItems - 1);
+    const pages = Array.from(Array((endPage + 1) - startPage).keys()).map(i => startPage + i);
     return {
-      totalItems: totalItems,
-      currentPage: currentPage,
-      pageSize: pageSize,
-      totalPages: totalPages,
-      startPage: startPage,
-      endPage: endPage,
-      startIndex: startIndex,
-      endIndex: endIndex,
-      pages: pages
+      totalItems,
+      currentPage,
+      pageSize,
+      totalPages,
+      startPage,
+      endPage,
+      startIndex,
+      endIndex,
+      pages
     };
   }
 }

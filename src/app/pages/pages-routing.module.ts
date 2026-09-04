@@ -12,7 +12,7 @@ import { RegisterComponent } from './register/register.component';
 import { CheckoutComponent } from './checkout/checkout.component';
 import { ContactComponent } from './contact/contact.component';
 import { AccountComponent } from './account/account.component';
-
+import { AuthGuard } from '../auth/auth.guard';
 
 const routes: Routes = [
   {
@@ -74,12 +74,13 @@ const routes: Routes = [
     path: 'account',
     component: AccountComponent,
     title: 'Account Page',
+    canActivate: [AuthGuard]
   },
 ];
 
 @NgModule({
   imports: [RouterModule.forChild(routes)],
-  exports: [RouterModule],
+  exports: [RouterModule]
 })
 
 export class PagesRoutingModule {}

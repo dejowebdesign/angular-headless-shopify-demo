@@ -84,7 +84,7 @@
                     <div class="profile__info-item">
                       <p>Email</p>
                       <h4>
-                        <a href="mailt:outstock@hotmail.com" class="__cf_email__" data-cfemail="94fdfaf2fbd4f1f0e1fff1e6baf7fbf9">outstock&#64;hotmail.com</a>
+                        <a *ngIf="customer?.email" href="mailto:{{customer!.email}}">{{customer!.email}}</a>
                       </h4>
                     </div>
                     <div class="profile__info-item">

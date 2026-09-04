@@ -31,7 +31,8 @@ export class RegisterComponent {
 
   ngOnInit () {
     this.registerForm = new FormGroup({
-      name: new FormControl(null, [Validators.required]),
+      firstName: new FormControl(null, [Validators.required]),
+      lastName: new FormControl(null, [Validators.required]),
       email: new FormControl(null, [Validators.required, Validators.email]),
       password: new FormControl(null, [Validators.required, Validators.minLength(6)]),
     })
@@ -42,8 +43,8 @@ export class RegisterComponent {
     this.registerError = '';
     if (this.registerForm.valid) {
       this.isLoading = true;
-      const firstName = this.registerForm.get('name')?.value.split(' ')[0] || '';
-      const lastName = this.registerForm.get('name')?.value.split(' ')[1] || '';
+      const firstName = this.registerForm.get('firstName')?.value;
+      const lastName = this.registerForm.get('lastName')?.value;
       const email = this.registerForm.get('email')?.value;
       const password = this.registerForm.get('password')?.value;
       this.customerService.register(firstName, lastName, email, password).subscribe(
@@ -68,7 +69,8 @@ export class RegisterComponent {
     }
   }
 
-  get name() { return this.registerForm.get('name') }
+  get firstName() { return this.registerForm.get('firstName') }
+  get lastName() { return this.registerForm.get('lastName') }
   get email() { return this.registerForm.get('email') }
   get password() { return this.registerForm.get('password') }
 }

@@ -9,13 +9,7 @@ interface CustomerAccessTokenCreateResponse {
       accessToken: string;
       expiresAt: string;
     };
-    customer: {
-      id: string;
-      email: string;
-      firstName: string;
-      lastName: string;
-    };
-    userErrors: Array<{ message: string; field: string[] }>;
+    customerUserErrors: Array<{ message: string; field: string[] }>;
   };
 }
 
@@ -81,15 +75,18 @@ export class ShopifyCustomerService {
   }
 
   login(email: string, password: string): Observable<{ success: boolean; errors?: string[] }> {
-    const mutation = `\n      mutation customerAccessTokenCreate($input: CustomerAccessTokenCreateInput!) {\n        customerAccessTokenCreate(input: $input) {\n          customerAccessToken {\n            accessToken\n            expiresAt\n          }\n          customer {\n            id\n            email\n            firstName\n            lastName\n          }\n          userErrors {\n            message\n            field\n          }\n        }\n      }\n    `;
+    const mutation = `\n      mutation customerAccessTokenCreate($input: CustomerAccessTokenCreateInput!) {\n        customerAccessTokenCreate(input: $input) {\n          customerAccessToken {\n            accessToken\n            expiresAt\n          }\n          customerUserErrors {\n            message\n            field\n          }\n        }\n      }\n    `;
     const variables = { input: { email, password } };
     return this.storefront.execute<CustomerAccessTokenCreateResponse>(mutation, variables).pipe(
       map(result => {
         const payload = result.customerAccessTokenCreate;
-        if (payload.userErrors.length > 0) {
-          return { success: false, errors: payload.userErrors.map(e => e.message) };
+        if (payload.customerUserErrors.length > 0) {
+          return { success: false, errors: payload.customerUserErrors.map(e => e.message) };
         }
-        const token = payload.customerAccessToken.accessToken;
+        const token = payload.customerAccessToken?.accessToken;
+        if (!token) {
+          return { success: false, errors: ['Login failed: no access token returned'] };
+        }
         this.tokenSubject.next(token);
         sessionStorage.setItem(this.TOKEN_KEY, token);
         return { success: true };
@@ -173,7 +170,7 @@ export class ShopifyCustomerService {
     if (!token) {
       return of(null);
     }
-    const query = `\n      {\n        customer {\n          id\n          email\n          firstName\n          lastName\n          phone\n          addresses(first: 1) {\n            edges {\n              node {\n                address1\n                address2\n                city\n                province\n                country\n                zip\n              }\n            }\n          }\n        }\n      }\n    `;
+    const query = `\n      {\n        customer {\n          id\n\n          email\n          firstName\n          lastName\n          phone\n          addresses(first: 1) {\n            edges {\n              node {\n                address1\n                address2\n                city\n                province\n                country\n                zip\n              }\n            }\n          }\n        }\n      }\n    `;
     return this.storefront.execute<GetCurrentCustomerResponse>(query).pipe(
       map(result => {
         const customer = result.customer;

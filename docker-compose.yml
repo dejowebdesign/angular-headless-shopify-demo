@@ -1,0 +1,8 @@
+services:
+  angular-shop:
+    image: ghcr.io/dejowebdesign/angular-headless-shopify-demo:latest
+    container_name: angular-headless-shopify-demo
+    restart: unless-stopped
+    ports:
+      - "4300:80"
+    pull_policy: always

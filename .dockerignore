@@ -1,0 +1,6 @@
+node_modules/
+dist/
+.git
+.gitignore
+temp_test_method.ts
+.DS_Store

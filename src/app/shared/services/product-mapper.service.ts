@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { IProduct } from '../types/product-d-t';
+import { IProduct, IProductVariant, IProductOption } from '../types/product-d-t';
 
 @Injectable({
   providedIn: 'root'
@@ -7,7 +7,7 @@ import { IProduct } from '../types/product-d-t';
 export class ProductMapperService {
   /**
    * Map a Shopify Storefront product node to the existing IProduct interface.
-   * All fields not provided by Shopify are given safe defaults.
+   * Maps ALL variants and options, not just the first one.
    */
   map(productNode: any): IProduct {
     // Extract numeric product ID from the global ID string
@@ -28,22 +28,53 @@ export class ProductMapperService {
     const banner_img = featured;
     const related_images = (productNode.images?.edges || []).map((e: any) => e.node.url).filter((url: string) => !!url);
 
-    // Variants – use first variant as default
-    const firstVariant = productNode.variants?.edges?.[0]?.node || {};
-    const price = Number(firstVariant.price?.amount ?? 0);
-    const old_price = firstVariant.compareAtPrice?.amount ? Number(firstVariant.compareAtPrice.amount) : undefined;
+    // Map ALL variants from Shopify
+    const variants: IProductVariant[] = (productNode.variants?.edges || [])
+      .map((edge: any) => {
+        const node = edge.node;
+        const price = Number(node.price?.amount ?? 0);
+        const compareAtPrice = node.compareAtPrice?.amount ? Number(node.compareAtPrice.amount) : undefined;
+        
+        return {
+          id: node.id ? node.id.replace('gid://shopify/ProductVariant/', '') : '',
+          title: node.title || '',
+          availableForSale: node.availableForSale ?? false,
+          price,
+          compareAtPrice,
+          selectedOptions: (node.selectedOptions || []).map((opt: any) => ({
+            name: opt.name,
+            value: opt.value
+          })),
+          image: node.image ? {
+            url: node.image.url,
+            altText: node.image.altText
+          } : undefined,
+          quantityAvailable: node.quantityAvailable
+        };
+      });
+
+    // Determine default variant (first available, or first variant)
+    const defaultVariant = variants.find(v => v.availableForSale) || variants[0];
+    const defaultVariantId = defaultVariant?.id;
+    
+    // Use default variant for backward compatibility
+    const price = defaultVariant?.price ?? 0;
+    const old_price = defaultVariant?.compareAtPrice;
     const discount = (old_price && old_price > price) ? Math.round(((old_price - price) / old_price) * 100) : 0;
-    const quantity = firstVariant.quantityAvailable !== undefined ? Number(firstVariant.quantityAvailable) : (firstVariant.availableForSale ? 1 : 0);
+    const quantity = defaultVariant?.quantityAvailable ?? (defaultVariant?.availableForSale ? 1 : 0);
 
-    // Extract variant ID for Shopify Cart API
-    const variantId = firstVariant.id ? firstVariant.id.replace('gid://shopify/ProductVariant/', '') : undefined;
+    // Build options from Shopify product options
+    const options: IProductOption[] = (productNode.options || []).map((option: any) => ({
+      id: option.id,
+      name: option.name,
+      values: (option.values || []).map((v: string) => v)
+    }));
 
-    // Selected options for sizes and colors
-    const selectedOptions = firstVariant.selectedOptions || [];
-    const sizes = selectedOptions.filter((o: any) => /size/i.test(o.name)).map((o: any) => o.value);
-    const colors = selectedOptions.filter((o: any) => /color|colour/i.test(o.name)).map((o: any) => o.value);
+    // Extract sizes and colors from options for backward compatibility
+    const sizes: string[] = options.find(o => /size/i.test(o.name))?.values || [];
+    const colors: string[] = options.find(o => /color|colour/i.test(o.name))?.values || [];
 
-    // UI‐only flags – default to false
+    // UI-only flags – default to false
     const trending = false;
     const topRated = false;
     const bestSeller = false;
@@ -89,7 +120,9 @@ export class ProductMapperService {
       category,
       brand,
       title,
-      variantId,  // <-- Added for Shopify Cart API
+      variantId: defaultVariantId,  // Default variant ID for backward compatibility
+      variants,  // NEW: All variants
+      options,  // NEW: All options
       details,
       reviews
     };

@@ -1,3 +1,26 @@
+export interface IProductVariant {
+  id: string;
+  title: string;
+  availableForSale: boolean;
+  price: number;
+  compareAtPrice?: number;
+  selectedOptions: {
+    name: string;
+    value: string;
+  }[];
+  image?: {
+    url: string;
+    altText?: string;
+  };
+  quantityAvailable?: number;
+}
+
+export interface IProductOption {
+  id?: string;
+  name: string;
+  values: string[];
+}
+
 export interface IProduct {
     id: number;
     img: string;
@@ -27,6 +50,10 @@ export interface IProduct {
     brand: string;
     title: string;
     variantId?: string;
+    // NEW: Variant selection support
+    variants?: IProductVariant[];
+    options?: IProductOption[];
+    selectedOptions?: { [key: string]: string };
     details: {
       details_text: string;
       details_list: string[];

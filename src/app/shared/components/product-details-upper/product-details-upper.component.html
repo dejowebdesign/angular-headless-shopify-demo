@@ -75,57 +75,90 @@
         </span>
         <span class="review rating-left"><a href="#">Add your Review</a></span>
       </div>
+      
+      <!-- Dynamic Price Display based on selected variant -->
       <div class="product__price-2 mb-25">
-        <span>${{product.price.toFixed(2)}}</span>
-        @if (product.old_price) {
-          <span class="old-price">${{product.old_price.toFixed(2)}}</span>
+        <span>${{ (selectedVariant?.price ?? product.price).toFixed(2) }}</span>
+        @if (selectedVariant?.compareAtPrice ?? product.old_price) {
+          <span class="old-price">${{ (selectedVariant?.compareAtPrice ?? product.old_price)?.toFixed(2) }}</span>
         }
       </div>
+      
       <div class="product__modal-des mb-30">
         <p>{{product.sm_desc}}</p>
       </div>
-      <div class="product__modal-form mb-30">
-        <form action="#">
-          <div class="product__modal-input size mb-20">
-            <label>Size <i class="fas fa-star-of-life"></i></label>
-            <select>
-              <option>- Please select -</option>
-              @for (size of product.sizes; track $index) {
-                <option>{{size}}</option>
-              }
-            </select>
-          </div>
-          <div class="product__modal-input color mb-20">
-            <label>Color <i class="fas fa-star-of-life"></i></label>
-            <select>
-              <option>- Please select -</option>
-              @for (clr of product.colors; track $index) {
-                <option>{{clr}}</option>
-              }
-            </select>
-          </div>
-          <div class="product__modal-required mb-5">
-            <span>Repuired Fiields *</span>
-          </div>
-          <div class="pro-quan-area d-sm-flex align-items-center">
-            <div class="product-quantity-title">
-              <label>Quantity</label>
+      
+      <!-- Dynamic Option Selection -->
+      @if (product.options && product.options.length > 0) {
+        <div class="product__modal-form mb-30">
+          <form>
+            @for (option of product.options; track option.name) {
+              <div class="product__modal-input mb-20">
+                <label>{{option.name}} <i class="fas fa-star-of-life"></i></label>
+                <select (change)="onOptionChange(option.name, $any($event).target.value)">
+                  <option value="">- Please select {{option.name}} -</option>
+                  @for (value of option.values; track value) {
+                    <option [value]="value" [disabled]="!isOptionValueAvailable(option.name, value)">
+                      {{value}}
+                    </option>
+                  }
+                </select>
+              </div>
+            }
+            <div class="product__modal-required mb-5">
+              <span>Required Fields *</span>
             </div>
-            <div class="product-quantity mr-20 mb-20">
-              <div class="cart-plus-minus">
-                <input type="text" [value]="cartService.orderQuantity" disabled readonly />
-                <div (click)="cartService.decrement()" class="dec qtybutton">-</div>
-                <div (click)="cartService.increment()" class="inc qtybutton">+</div>
+            <div class="pro-quan-area d-sm-flex align-items-center">
+              <div class="product-quantity-title">
+                <label>Quantity</label>
+              </div>
+              <div class="product-quantity mr-20 mb-20">
+                <div class="cart-plus-minus">
+                  <input type="text" [value]="cartService.orderQuantity" disabled readonly />
+                  <div (click)="cartService.decrement()" class="dec qtybutton">-</div>
+                  <div (click)="cartService.increment()" class="inc qtybutton">+</div>
+                </div>
+              </div>
+              <div class="pro-cart-btn">
+                <a (click)="addToCart()" class="add-cart-btn mb-20 cursor-pointer"
+                   [class.disabled]="!isAvailableForSale()">
+                  @if (isAvailableForSale()) {
+                    + Add to Cart
+                  } @else {
+                    Out of Stock
+                  }
+                </a>
               </div>
             </div>
-            <div class="pro-cart-btn">
-              <a (click)="cartService.addCartProduct(product)" class="add-cart-btn mb-20 cursor-pointer">
-                + Add to Cart
-              </a>
+          </form>
+        </div>
+      } @else {
+        <!-- Single variant product - no option selection needed -->
+        <div class="product__modal-form mb-30">
+          <form>
+            <div class="product__modal-required mb-5">
+              <span>Required Fields *</span>
             </div>
-          </div>
-        </form>
-      </div>
+            <div class="pro-quan-area d-sm-flex align-items-center">
+              <div class="product-quantity-title">
+                <label>Quantity</label>
+              </div>
+              <div class="product-quantity mr-20 mb-20">
+                <div class="cart-plus-minus">
+                  <input type="text" [value]="cartService.orderQuantity" disabled readonly />
+                  <div (click)="cartService.decrement()" class="dec qtybutton">-</div>
+                  <div (click)="cartService.increment()" class="inc qtybutton">+</div>
+                </div>
+              </div>
+              <div class="pro-cart-btn">
+                <a (click)="addToCart()" class="add-cart-btn mb-20 cursor-pointer">
+                  + Add to Cart
+                </a>
+              </div>
+            </div>
+          </form>
+        </div>
+      }
 
       @if (bottomShow) {
         <div>

@@ -10,13 +10,22 @@ import { IProduct } from 'src/app/shared/types/product-d-t';
 @Component({
   selector: 'app-collection',
   templateUrl: './collection.component.html',
-  styleUrls: ['./collection.component.scss']
+  styleUrls: ['./collection.component.scss'],
+  standalone: false
 })
 export class CollectionComponent implements OnInit {
-  collection: ICollection | null = null;
+  collection: ICollection = {
+    id: '',
+    title: '',
+    handle: '',
+    description: '',
+    image: { url: '', altText: '' }
+  };
   products: IProduct[] = [];
   loading = true;
   error: string | null = null;
+  
+
 
   constructor(
     private route: ActivatedRoute,

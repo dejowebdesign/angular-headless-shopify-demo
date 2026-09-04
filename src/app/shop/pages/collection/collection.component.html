@@ -4,16 +4,17 @@
 <main>
   <!-- Breadcrumb -->
   <app-breadcrumb-one
-    [title]="collection?.title || 'Collection'"
-    [subtitle]="collection?.title || 'Collections'"
+    [title]="collection.title || 'Collection'"
+    [subtitle]="collection.title || 'Collections'"
   ></app-breadcrumb-one>
 
   <!-- Collection Banner -->
-  @if (collection?.image?.url) {
-    <div class="collection-banner">
-      <img [src]="collection.image.url" [alt]="collection.image.altText || collection.title" class="img-fluid w-100">
-    </div>
-  }
+  <div class="collection-banner">
+    <img *ngIf="collection.image?.url"
+         [src]="collection.image?.url"
+         [alt]="collection.image?.altText || collection.title || 'Collection Image'"
+         class="img-fluid w-100">
+  </div>
 
   <!-- Collection Content -->
   <section class="shop-area pt-100 pb-100">
@@ -22,10 +23,8 @@
       <div class="row mb-50">
         <div class="col-12">
           <div class="collection-header text-center">
-            <h1 class="collection-title">{{collection?.title}}</h1>
-            @if (collection?.description) {
-              <div class="collection-description" [innerHTML]="collection.description"></div>
-            }
+            <h1 class="collection-title">{{collection.title}}</h1>
+            <div *ngIf="collection.description" class="collection-description" [innerHTML]="collection.description"></div>
           </div>
         </div>
       </div>

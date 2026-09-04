@@ -33,7 +33,7 @@ import { CartComponent } from './pages/cart/cart.component';
 import { WishlistComponent } from './pages/wishlist/wishlist.component';
 import { CompareComponent } from './pages/compare/compare.component';
 import { SearchComponent } from './pages/search/search.component';
-
+import { CollectionComponent } from './pages/collection/collection.component';
 
 
 @NgModule({
@@ -65,6 +65,7 @@ import { SearchComponent } from './pages/search/search.component';
     WishlistComponent,
     CompareComponent,
     SearchComponent,
+    CollectionComponent,
   ],
   imports: [
     CommonModule,

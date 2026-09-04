@@ -10,7 +10,7 @@ import { CartComponent } from './pages/cart/cart.component';
 import { WishlistComponent } from './pages/wishlist/wishlist.component';
 import { CompareComponent } from './pages/compare/compare.component';
 import { SearchComponent } from './pages/search/search.component';
-
+import { CollectionComponent } from './pages/collection/collection.component';
 
 
 const routes: Routes = [
@@ -63,6 +63,11 @@ const routes: Routes = [
     path:'search',
     component:SearchComponent,
     title:'Shop Search Page'
+  },
+  {
+    path:'collections/:handle',
+    component:CollectionComponent,
+    title:'Collection Page'
   },
 ];
 

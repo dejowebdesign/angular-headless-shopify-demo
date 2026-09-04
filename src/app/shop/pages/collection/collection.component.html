@@ -1,0 +1,72 @@
+<!-- Collection Page - Outstock Template -->
+<app-header-one [transparent]="true" [white_bg]="true"></app-header-one>
+
+<main>
+  <!-- Breadcrumb -->
+  <app-breadcrumb-one
+    [title]="collection?.title || 'Collection'"
+    [subtitle]="collection?.title || 'Collections'"
+  ></app-breadcrumb-one>
+
+  <!-- Collection Banner -->
+  @if (collection?.image?.url) {
+    <div class="collection-banner">
+      <img [src]="collection.image.url" [alt]="collection.image.altText || collection.title" class="img-fluid w-100">
+    </div>
+  }
+
+  <!-- Collection Content -->
+  <section class="shop-area pt-100 pb-100">
+    <div class="container">
+      <!-- Collection Title & Description -->
+      <div class="row mb-50">
+        <div class="col-12">
+          <div class="collection-header text-center">
+            <h1 class="collection-title">{{collection?.title}}</h1>
+            @if (collection?.description) {
+              <div class="collection-description" [innerHTML]="collection.description"></div>
+            }
+          </div>
+        </div>
+      </div>
+
+      <!-- Loading State -->
+      @if (loading) {
+        <div class="text-center py-5">
+          <div class="spinner-border text-primary" role="status">
+            <span class="visually-hidden">Loading...</span>
+          </div>
+          <p class="mt-3">Loading products...</p>
+        </div>
+      }
+
+      <!-- Error State -->
+      @if (error && !loading) {
+        <div class="alert alert-danger text-center" role="alert">
+          {{error}}
+        </div>
+      }
+
+      <!-- Products Grid -->
+      @if (!loading && !error && products.length > 0) {
+        <div class="row">
+          @for (product of products; track product.id) {
+            <div class="col-xl-3 col-lg-4 col-md-4 col-sm-6 mb-30">
+              <app-product-item [product]="product"></app-product-item>
+            </div>
+          }
+        </div>
+      }
+
+      <!-- Empty State -->
+      @if (!loading && !error && products.length === 0) {
+        <div class="text-center py-5">
+          <h3>No products found in this collection</h3>
+          <a routerLink="/shop" class="os-btn os-btn-black mt-3">Back to Shop</a>
+        </div>
+      }
+    </div>
+  </section>
+</main>
+
+<app-footer-one></app-footer-one>

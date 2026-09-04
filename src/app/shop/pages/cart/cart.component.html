@@ -92,19 +92,31 @@
                   <h2>Cart totals</h2>
                   <ul class="mb-20">
                     <li>Subtotal <span>${{(cartService.totalPriceQuantity().total).toFixed(2)}}</span>
-                  </li>
-                  <li>Total <span>${{(cartService.totalPriceQuantity().total).toFixed(2)}}</span></li>
-                </ul>
-                <a class="os-btn" routerLink="/pages/checkout">Proceed to checkout</a>
+                    </li>
+                    <li>Total <span>${{(cartService.totalPriceQuantity().total).toFixed(2)}}</span></li>
+                  </ul>
+                  
+                  @if (isCheckoutProcessing) {
+                    <button class="os-btn" disabled>
+                      Processing...
+                    </button>
+                  } @else if (checkoutError) {
+                    <button class="os-btn os-btn-danger" (click)="proceedToCheckout()">
+                      Retry Checkout
+                    </button>
+                    <p class="text-danger mt-2">{{checkoutError}}</p>
+                  } @else {
+                    <a class="os-btn" (click)="proceedToCheckout()">Proceed to checkout</a>
+                  }
+                </div>
               </div>
             </div>
           </div>
         </div>
-      </div>
-    }
-  </div>
-</section>
-<!-- Cart Area End-->
+      }
+    </div>
+  </section>
+  <!-- Cart Area End-->
 </main>
 
 <!-- footer start -->

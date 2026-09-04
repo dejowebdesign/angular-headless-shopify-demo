@@ -61,17 +61,11 @@ export class CartService {
   public totalPriceQuantity() {
     return state.cart_products.reduce(
       (cartTotal: { total: number; quantity: number }, cartItem: IProduct) => {
-        const { price, orderQuantity, discount } = cartItem;
+        const { price, orderQuantity } = cartItem;
         if (typeof orderQuantity !== "undefined") {
-          if (discount && discount > 0) {
-            // Calculate the item total with discount
-            const itemTotal = (price - (price * discount) / 100) * orderQuantity;
-            cartTotal.total += itemTotal;
-          } else {
-            // Calculate the item total without discount
-            const itemTotal = price * orderQuantity;
-            cartTotal.total += itemTotal;
-          }
+          // Calculate the item total without applying discount (consistent with line total display)
+          const itemTotal = price * orderQuantity;
+          cartTotal.total += itemTotal;
           cartTotal.quantity += orderQuantity;
         }
         return cartTotal;

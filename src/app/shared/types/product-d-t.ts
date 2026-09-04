@@ -26,16 +26,17 @@ export interface IProduct {
     category: string;
     brand: string;
     title: string;
+    variantId?: string;
     details: {
       details_text: string;
       details_list: string[];
       details_text_2: string;
-  };
-  reviews:{
-    img: string;
-    name: string;
-    time: string;
-    rating: number;
-    review_desc: string;
-  }[]
+    };
+    reviews:{
+      img: string;
+      name: string;
+      time: string;
+      rating: number;
+      review_desc: string;
+    }[]
 }

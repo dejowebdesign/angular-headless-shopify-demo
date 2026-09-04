@@ -35,6 +35,9 @@ export class ProductMapperService {
     const discount = (old_price && old_price > price) ? Math.round(((old_price - price) / old_price) * 100) : 0;
     const quantity = firstVariant.quantityAvailable !== undefined ? Number(firstVariant.quantityAvailable) : (firstVariant.availableForSale ? 1 : 0);
 
+    // Extract variant ID for Shopify Cart API
+    const variantId = firstVariant.id ? firstVariant.id.replace('gid://shopify/ProductVariant/', '') : undefined;
+
     // Selected options for sizes and colors
     const selectedOptions = firstVariant.selectedOptions || [];
     const sizes = selectedOptions.filter((o: any) => /size/i.test(o.name)).map((o: any) => o.value);
@@ -86,6 +89,7 @@ export class ProductMapperService {
       category,
       brand,
       title,
+      variantId,  // <-- Added for Shopify Cart API
       details,
       reviews
     };

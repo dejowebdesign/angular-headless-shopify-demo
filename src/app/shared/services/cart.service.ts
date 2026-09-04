@@ -130,4 +130,13 @@ export class CartService {
   initialOrderQuantity() {
     return this.orderQuantity = 1;
   };
+
+  // updateCartItemVariantId – migrates old cart items missing variantId
+  updateCartItemVariantId(productId: number, variantId: string): void {
+    const item = state.cart_products.find((p: IProduct) => p.id === productId);
+    if (item && (!item.variantId || item.variantId !== variantId)) {
+      item.variantId = variantId;
+      localStorage.setItem("cart_products", JSON.stringify(state.cart_products));
+    }
+  }
 }

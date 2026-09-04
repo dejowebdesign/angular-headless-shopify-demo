@@ -36,8 +36,17 @@
         <span>${{(cartService.totalPriceQuantity().total).toFixed(2)}}</span>
       </div>
       <div class="checkout-link">
-        <a routerLink="/shop/cart" class="os-btn">view Cart</a>
-        <a class="os-btn os-btn-black" routerLink="/pages/checkout">Checkout</a>
+        <a routerLink="/shop/cart" class="os-btn">View Cart</a>
+        @if (isCheckoutProcessing) {
+          <button class="os-btn os-btn-black" disabled>Processing...</button>
+        } @else if (checkoutError) {
+          <button class="os-btn os-btn-danger" (click)="proceedToCheckout()">
+            Retry Checkout
+          </button>
+          <p class="text-danger mt-2">{{checkoutError}}</p>
+        } @else {
+          <a class="os-btn os-btn-black cursor-pointer" (click)="proceedToCheckout()">Checkout</a>
+        }
       </div>
     </div>
   }

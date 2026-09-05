@@ -1,4 +1,6 @@
 import { Injectable } from '@angular/core';
+import { HttpClient, HttpHeaders } from '@angular/common/http';
+import { environment } from '../../../environments/environment';
 
 @Injectable({
   providedIn: 'root'
@@ -8,7 +10,7 @@ export class ShopifyCustomerAccountService {
   private readonly STATE_KEY = 'shopify_oauth_state';
   private readonly VERIFIER_KEY = 'shopify_oauth_verifier';
 
-  constructor() {}
+  constructor(private http: HttpClient) {}
 
   // Generate a cryptographically secure random string for state or code_verifier
   private generateRandomString(length: number): string {
@@ -79,5 +81,101 @@ export class ShopifyCustomerAccountService {
   public clearSessionData(): void {
     sessionStorage.removeItem(this.STATE_KEY);
     sessionStorage.removeItem(this.VERIFIER_KEY);
+  }
+
+  // Start the OAuth login flow
+  public async startLogin(): Promise<void> {
+    const config = environment.shopifyCustomerAccount;
+    
+    // Generate state and PKCE parameters
+    const state = this.generateState();
+    const codeVerifier = this.generateCodeVerifier();
+    const codeChallenge = await this.generateCodeChallenge(codeVerifier);
+    
+    // Store for callback validation
+    this.storeSessionData(state, codeVerifier);
+    
+    // Build authorization URL
+    const params = new URLSearchParams({
+      client_id: config.clientId,
+      scope: config.scope,
+      redirect_uri: config.redirectUri,
+      response_type: 'code',
+      state: state,
+      code_challenge: codeChallenge,
+      code_challenge_method: 'S256'
+    });
+    
+    const authUrl = `${config.authorizationEndpoint}?${params.toString()}`;
+    
+    // Redirect to Shopify
+    window.location.href = authUrl;
+  }
+
+  // Exchange authorization code for tokens
+  public async exchangeCodeForTokens(code: string): Promise<{
+    access_token: string;
+    id_token?: string;
+    expires_in: number;
+    refresh_token?: string;
+  }> {
+    const config = environment.shopifyCustomerAccount;
+    const verifier = this.getStoredVerifier();
+    
+    if (!verifier) {
+      throw new Error('Missing PKCE code verifier. Please start the login process again.');
+    }
+    
+    const body = new URLSearchParams({
+      grant_type: 'authorization_code',
+      client_id: config.clientId,
+      redirect_uri: config.redirectUri,
+      code: code,
+      code_verifier: verifier
+    });
+    
+    const headers = new HttpHeaders({
+      'Content-Type': 'application/x-www-form-urlencoded'
+    });
+    
+    try {
+      const response = await this.http.post<any>(config.tokenEndpoint, body.toString(), { headers }).toPromise();
+      
+      if (response.error) {
+        throw new Error(response.error_description || response.error);
+      }
+      
+      return {
+        access_token: response.access_token,
+        id_token: response.id_token,
+        expires_in: response.expires_in,
+        refresh_token: response.refresh_token
+      };
+    } catch (error: any) {
+      if (error.error?.error_description) {
+        throw new Error(error.error.error_description);
+      }
+      throw new Error('Failed to exchange authorization code for tokens: ' + (error.message || 'Unknown error'));
+    }
+  }
+
+  // Validate state parameter
+  public validateState(returnedState: string): boolean {
+    const storedState = this.getStoredState();
+    if (!storedState) {
+      throw new Error('No stored OAuth state. Please start the login process again.');
+    }
+    if (storedState !== returnedState) {
+      this.clearSessionData();
+      throw new Error('OAuth state mismatch. Possible CSRF attack.');
+    }
+    return true;
+  }
+
+  // Logout
+  public logout(): void {
+    this.clearSessionData();
+    const config = environment.shopifyCustomerAccount;
+    window.location.href = config.logoutEndpoint;
   }
 }

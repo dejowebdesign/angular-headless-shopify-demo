@@ -17,6 +17,7 @@ import { CheckoutComponent } from './checkout/checkout.component';
 import { ContactComponent } from './contact/contact.component';
 import { AccountComponent } from './account/account.component';
 import { NotFoundComponent } from './not-found/not-found.component';
+import { CallbackComponent } from './auth/callback/callback.component';
 
 
 
@@ -35,6 +36,7 @@ import { NotFoundComponent } from './not-found/not-found.component';
     ContactComponent,
     AccountComponent,
     NotFoundComponent,
+    CallbackComponent,
   ],
   imports: [
     CommonModule,

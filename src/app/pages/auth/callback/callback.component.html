@@ -1,0 +1,44 @@
+<!-- header start -->
+<app-header-one [transparent]="true" [white_bg]="true"></app-header-one>
+<!-- header end -->
+
+<main>
+  <!-- breadcrumb start -->
+  <app-breadcrumb-one title="Authentication" subtitle="Callback"></app-breadcrumb-one>
+  <!-- breadcrumb end -->
+
+  <!-- callback Area start -->
+  <section class="login-area pt-100 pb-100">
+    <div class="container">
+      <div class="row">
+        <div class="col-lg-8 offset-lg-2">
+          <div class="basic-login">
+            <h3 class="text-center mb-60">Authentication</h3>
+            
+            @if (isLoading) {
+              <div class="text-center">
+                <div class="spinner-border" role="status">
+                  <span class="sr-only">Loading...</span>
+                </div>
+                <p class="mt-3">Completing authentication...</p>
+              </div>
+            }
+            
+            @if (errorMessage) {
+              <div class="alert alert-danger">
+                <strong>Authentication Error</strong>
+                <p>{{ errorMessage }}</p>
+                <a routerLink="/pages/login" class="btn btn-primary mt-2">Return to Login</a>
+              </div>
+            }
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+  <!-- callback Area End-->
+</main>
+
+<!-- footer start -->
+<app-footer-one></app-footer-one>
+<!-- footer end -->

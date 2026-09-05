@@ -12,6 +12,7 @@ import { RegisterComponent } from './register/register.component';
 import { CheckoutComponent } from './checkout/checkout.component';
 import { ContactComponent } from './contact/contact.component';
 import { AccountComponent } from './account/account.component';
+import { CallbackComponent } from './auth/callback/callback.component';
 import { AuthGuard } from '../auth/auth.guard';
 
 const routes: Routes = [
@@ -75,6 +76,11 @@ const routes: Routes = [
     component: AccountComponent,
     title: 'Account Page',
     canActivate: [AuthGuard]
+  },
+  {
+    path: 'auth/callback',
+    component: CallbackComponent,
+    title: 'OAuth Callback'
   },
 ];
 

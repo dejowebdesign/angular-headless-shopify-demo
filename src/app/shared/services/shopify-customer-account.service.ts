@@ -10,21 +10,18 @@ export class ShopifyCustomerAccountService {
 
   constructor() {}
 
-  // Generate a random string for state or code_verifier
+  // Generate a cryptographically secure random string for state or code_verifier
   private generateRandomString(length: number): string {
     const possible = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789-._~';
+    const cryptoObj = window.crypto;
+    if (!cryptoObj || !cryptoObj.getRandomValues) {
+      throw new Error('Secure browser cryptography is not available. OAuth security values cannot be generated.');
+    }
+    const array = new Uint8Array(length);
+    cryptoObj.getRandomValues(array);
     let text = '';
-    const cryptoObj = window.crypto || (window as any).msCrypto;
-    if (cryptoObj && cryptoObj.getRandomValues) {
-      const array = new Uint8Array(length);
-      cryptoObj.getRandomValues(array);
-      for (let i = 0; i < length; i++) {
-        text += possible.charAt(array[i] % possible.length);
-      }
-    } else {
-      for (let i = 0; i < length; i++) {
-        text += possible.charAt(Math.floor(Math.random() * possible.length));
-      }
+    for (let i = 0; i < length; i++) {
+      text += possible.charAt(array[i] % possible.length);
     }
     return text;
   }
@@ -36,10 +33,14 @@ export class ShopifyCustomerAccountService {
 
   // Generate SHA-256 code_challenge from code_verifier
   public async generateCodeChallenge(verifier: string): Promise<string> {
-    const encoder = new TextEncoder();
-    const data = encoder.encode(verifier);
-    const digest = await window.crypto.subtle.digest('SHA-256', data);
-    return this.base64UrlEncode(digest);
+    try {
+      const encoder = new TextEncoder();
+      const data = encoder.encode(verifier);
+      const digest = await window.crypto.subtle.digest('SHA-256', data);
+      return this.base64UrlEncode(digest);
+    } catch (error) {
+      throw new Error('Failed to generate PKCE code challenge: ' + (error instanceof Error ? error.message : 'Unknown error'));
+    }
   }
 
   // Base64-URL encode an ArrayBuffer or Uint8Array

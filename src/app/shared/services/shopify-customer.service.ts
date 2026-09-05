@@ -56,7 +56,7 @@ interface GetCurrentCustomerResponse {
           zip: string | null;
         }
       }> | null;
-    };
+    }
   } | null;
 }
 
@@ -64,8 +64,9 @@ interface GetCurrentCustomerResponse {
   providedIn: 'root'
 })
 export class ShopifyCustomerService {
+
   private tokenSubject = new BehaviorSubject<string | null>(null);
-  private readonly TOKEN_KEY = 'shopify_customer_access_token';
+  private readonly TOKEN_KEY = 'shopify_legacy_access_token';
 
   constructor(private storefront: ShopifyStorefrontService) {
     const token = sessionStorage.getItem(this.TOKEN_KEY);
@@ -198,21 +199,7 @@ export class ShopifyCustomerService {
           phone: customer.phone,
           address: address
         };
-      }),
-      catchError(error => {
-        console.error('Get current customer error', error);
-        // If token invalid, we should log out
-        this.logout().subscribe();
-        return of(null);
       })
     );
-  }
-
-  isAuthenticated(): boolean {
-    return !!this.tokenSubject.getValue();
-  }
-
-  get token$() {
-    return this.tokenSubject.asObservable();
   }
 }

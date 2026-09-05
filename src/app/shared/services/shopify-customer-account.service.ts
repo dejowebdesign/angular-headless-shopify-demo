@@ -2,6 +2,12 @@ import { Injectable } from '@angular/core';
 import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { environment } from '../../../environments/environment';
 
+interface Discovery {
+  authorization_endpoint: string;
+  token_endpoint: string;
+  end_session_endpoint: string;
+}
+
 @Injectable({
   providedIn: 'root'
 })
@@ -9,6 +15,14 @@ export class ShopifyCustomerAccountService {
 
   private readonly STATE_KEY = 'shopify_oauth_state';
   private readonly VERIFIER_KEY = 'shopify_oauth_verifier';
+  
+  // Token storage keys (namespaced to avoid conflict with legacy service)
+  private readonly ACCESS_TOKEN_KEY = 'shopify_customer_account_access_token';
+  private readonly ID_TOKEN_KEY = 'shopify_customer_account_id_token';
+  private readonly REFRESH_TOKEN_KEY = 'shopify_customer_account_refresh_token'; 
+  private readonly EXPIRES_AT_KEY = 'shopify_customer_account_expires_at';
+
+  private discovery: Discovery | null = null;
 
   constructor(private http: HttpClient) {}
 
@@ -83,11 +97,23 @@ export class ShopifyCustomerAccountService {
     sessionStorage.removeItem(this.VERIFIER_KEY);
   }
 
-  // Token storage keys
-  private readonly ACCESS_TOKEN_KEY = 'shopify_customer_access_token';
-  private readonly ID_TOKEN_KEY = 'shopify_customer_id_token';
-  private readonly REFRESH_TOKEN_KEY = 'shopify_customer_refresh_token';
-  private readonly EXPIRES_AT_KEY = 'shopify_customer_expires_at';
+  // Fetch discovery configuration and cache it
+  private async getDiscovery(): Promise<Discovery> {
+    if (this.discovery) {
+      return this.discovery;
+    }
+    try {
+      const resp = await this.http.get<any>(environment.shopifyCustomerAccount.discoveryUrl).toPromise();
+      this.discovery = {
+        authorization_endpoint: resp.authorization_endpoint,
+        token_endpoint: resp.token_endpoint,
+        end_session_endpoint: resp.end_session_endpoint
+      };
+      return this.discovery;
+    } catch (error) {
+      throw new Error('Unable to retrieve Shopify authentication configuration.');
+    }
+  }
 
   // Store OAuth tokens securely in sessionStorage
   public storeTokens(tokenResponse: {
@@ -154,31 +180,36 @@ export class ShopifyCustomerAccountService {
 
   // Start the OAuth login flow
   public async startLogin(): Promise<void> {
-    const config = environment.shopifyCustomerAccount;
-    
-    // Generate state and PKCE parameters
-    const state = this.generateState();
-    const codeVerifier = this.generateCodeVerifier();
-    const codeChallenge = await this.generateCodeChallenge(codeVerifier);
-    
-    // Store for callback validation
-    this.storeSessionData(state, codeVerifier);
-    
-    // Build authorization URL
-    const params = new URLSearchParams({
-      client_id: config.clientId,
-      scope: config.scope,
-      redirect_uri: config.redirectUri,
-      response_type: 'code',
-      state: state,
-      code_challenge: codeChallenge,
-      code_challenge_method: 'S256'
-    });
-    
-    const authUrl = `${config.authorizationEndpoint}?${params.toString()}`;
-    
-    // Redirect to Shopify
-    window.location.href = authUrl;
+    try {
+      const discovery = await this.getDiscovery();
+      const config = environment.shopifyCustomerAccount;
+      
+      // Generate state and PKCE parameters
+      const state = this.generateState();
+      const codeVerifier = this.generateCodeVerifier();
+      const codeChallenge = await this.generateCodeChallenge(codeVerifier);
+      
+      // Store for callback validation
+      this.storeSessionData(state, codeVerifier);
+      
+      // Build authorization URL
+      const params = new URLSearchParams({
+        client_id: config.clientId,
+        scope: config.scope,
+        redirect_uri: config.redirectUri,
+        response_type: 'code',
+        state: state,
+        code_challenge: codeChallenge,
+        code_challenge_method: 'S256'
+      });
+      
+      const authUrl = `${discovery.authorization_endpoint}?${params.toString()}`;
+      
+      // Redirect to Shopify
+      window.location.href = authUrl;
+    } catch (error: any) {
+      throw new Error('Unable to initiate Shopify login: ' + (error.message || 'Unknown error'));
+    }
   }
 
   // Exchange authorization code for tokens
@@ -188,27 +219,28 @@ export class ShopifyCustomerAccountService {
     expires_in: number;
     refresh_token?: string;
   }> {
-    const config = environment.shopifyCustomerAccount;
-    const verifier = this.getStoredVerifier();
-    
-    if (!verifier) {
-      throw new Error('Missing PKCE code verifier. Please start the login process again.');
-    }
-    
-    const body = new URLSearchParams({
-      grant_type: 'authorization_code',
-      client_id: config.clientId,
-      redirect_uri: config.redirectUri,
-      code: code,
-      code_verifier: verifier
-    });
-    
-    const headers = new HttpHeaders({
-      'Content-Type': 'application/x-www-form-urlencoded'
-    });
-    
     try {
-      const response = await this.http.post<any>(config.tokenEndpoint, body.toString(), { headers }).toPromise();
+      const discovery = await this.getDiscovery();
+      const config = environment.shopifyCustomerAccount;
+      const verifier = this.getStoredVerifier();
+      
+      if (!verifier) {
+        throw new Error('Missing PKCE code verifier. Please start the login process again.');
+      }
+      
+      const body = new URLSearchParams({
+        grant_type: 'authorization_code',
+        client_id: config.clientId,
+        redirect_uri: config.redirectUri,
+        code: code,
+        code_verifier: verifier
+      });
+      
+      const headers = new HttpHeaders({
+        'Content-Type': 'application/x-www-form-urlencoded'
+      });
+      
+      const response = await this.http.post<any>(discovery.token_endpoint, body.toString(), { headers }).toPromise();
       
       if (response.error) {
         throw new Error(response.error_description || response.error);
@@ -221,9 +253,6 @@ export class ShopifyCustomerAccountService {
         refresh_token: response.refresh_token
       };
     } catch (error: any) {
-      if (error.error?.error_description) {
-        throw new Error(error.error.error_description);
-      }
       throw new Error('Failed to exchange authorization code for tokens: ' + (error.message || 'Unknown error'));
     }
   }
@@ -245,7 +274,11 @@ export class ShopifyCustomerAccountService {
   public logout(): void {
     this.clearSessionData();
     this.clearTokens();
-    const config = environment.shopifyCustomerAccount;
-    window.location.href = config.logoutEndpoint;
+    this.getDiscovery().then(discovery => {
+      window.location.href = discovery.end_session_endpoint;
+    }).catch(() => {
+      // Fallback to hardcoded logout endpoint from environment if discovery fails
+      window.location.href = environment.shopifyCustomerAccount.logoutEndpoint;
+    });
   }
 }

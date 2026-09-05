@@ -2,6 +2,7 @@ import { Injectable } from '@angular/core';
 import { firstValueFrom } from 'rxjs';
 import { IProduct } from '../types/product-d-t';
 import { ShopifyStorefrontService } from './shopify-storefront.service';
+import { ShopifyCustomerAccountService } from './shopify-customer-account.service';
 
 interface CartLineInput {
   merchandiseId: string;
@@ -52,11 +53,11 @@ interface CartQueryPayload {
           quantity: number;
           merchandise: {
             id: string;
-          };
-        };
+          }
+        }
       }>;
-    };
-  };
+    }
+  }
 }
 
 @Injectable({
@@ -65,7 +66,10 @@ interface CartQueryPayload {
 export class ShopifyCartService {
   private readonly CART_ID_STORAGE_KEY = 'shopify_cart_id';
 
-  constructor(private storefront: ShopifyStorefrontService) {}
+  constructor(
+    private storefront: ShopifyStorefrontService,
+    private oauthService: ShopifyCustomerAccountService
+  ) {}
 
   /**
    * Build a full Shopify ProductVariant GID from a variantId.
@@ -79,6 +83,28 @@ export class ShopifyCartService {
       return variantId;
     }
     return `gid://shopify/ProductVariant/${variantId}`;
+  }
+
+  /**
+   * Append sso=silent to checkoutUrl if the user is authenticated via OAuth.
+   * Uses URL API to properly handle existing query parameters.
+   */
+  private applyCheckoutSsoIfAuthenticated(checkoutUrl: string | null): string | null {
+    if (!checkoutUrl) {
+      return null;
+    }
+    if (!this.oauthService.isAuthenticated()) {
+      return checkoutUrl;
+    }
+    try {
+      const url = new URL(checkoutUrl);
+      url.searchParams.set('sso', 'silent');
+      return url.toString();
+    } catch (e) {
+      // Fallback to string concatenation if URL construction fails (should not happen)
+      const separator = checkoutUrl.includes('?') ? '&' : '?';
+      return `${checkoutUrl}${separator}sso=silent`;
+    }
   }
 
   /**
@@ -129,7 +155,8 @@ export class ShopifyCartService {
 
       if (result.cartCreate.cart?.id) {
         localStorage.setItem(this.CART_ID_STORAGE_KEY, result.cartCreate.cart.id);
-        return result.cartCreate.cart.checkoutUrl;
+        const checkoutUrl = result.cartCreate.cart.checkoutUrl;
+        return this.applyCheckoutSsoIfAuthenticated(checkoutUrl);
       }
 
       return null;
@@ -157,7 +184,9 @@ export class ShopifyCartService {
         this.storefront.execute<{ cart: { id: string; checkoutUrl: string } }>(query, { cartId })
       );
 
-      return result.cart?.checkoutUrl ?? null;
+      let checkoutUrl = result.cart?.checkoutUrl ?? null;
+      checkoutUrl = this.applyCheckoutSsoIfAuthenticated(checkoutUrl);
+      return checkoutUrl;
     } catch (error) {
       console.error('Failed to get Shopify checkout URL:', error);
       return null;
@@ -198,7 +227,7 @@ export class ShopifyCartService {
             }
           }
         }
-      `;
+      `
 
       const result = await firstValueFrom(
         this.storefront.execute<CartLinesAddPayload>(mutation, { cartId, lines })
@@ -210,10 +239,13 @@ export class ShopifyCartService {
       }
 
       if (result.cartLinesAdd.cart) {
-        return {
-          id: result.cartLinesAdd.cart.id,
-          checkoutUrl: result.cartLinesAdd.cart.checkoutUrl
-        };
+        const checkoutUrl = result.cartLinesAdd.cart.checkoutUrl;
+        const ssoApplied = this.applyCheckoutSsoIfAuthenticated(checkoutUrl);
+        if (ssoApplied) {
+          return { id: result.cartLinesAdd.cart.id, checkoutUrl: ssoApplied };
+        } else {
+          return { id: result.cartLinesAdd.cart.id, checkoutUrl: checkoutUrl };
+        }
       }
 
       return null;

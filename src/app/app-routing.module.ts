@@ -1,6 +1,7 @@
 import { NgModule } from '@angular/core';
 import { RouterModule, Routes } from '@angular/router';
 import { NotFoundComponent } from './pages/not-found/not-found.component';
+import { CallbackComponent } from './pages/auth/callback/callback.component';
 
 const routes: Routes = [
   {
@@ -21,17 +22,18 @@ const routes: Routes = [
     loadChildren: () => import('./pages/pages.module').then(m => m.PagesModule)
   },
   {
+    path: 'auth/callback',
+    component: CallbackComponent,
+    title: 'OAuth Callback'
+  },
+  {
     path: '**',
-    component:NotFoundComponent
+    component: NotFoundComponent
   },
 ];
 
 @NgModule({
-  imports: [RouterModule.forRoot(routes,{
-    useHash: false,
-    anchorScrolling: 'enabled',
-    scrollPositionRestoration: 'enabled'
-  })],
+  imports: [RouterModule.forRoot(routes, {\n    useHash: false,\n    anchorScrolling: 'enabled',\n    scrollPositionRestoration: 'enabled'\n  })],
   exports: [RouterModule]
 })
 export class AppRoutingModule { }

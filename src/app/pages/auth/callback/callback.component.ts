@@ -47,14 +47,13 @@ export class CallbackComponent implements OnInit {
       // Exchange authorization code for tokens
       const tokens = await this.oauthService.exchangeCodeForTokens(code);
 
-      // Clear temporary OAuth data after successful token exchange
+      // Store the returned OAuth tokens
+      this.oauthService.storeTokens(tokens);
+
+      // Clear temporary OAuth PKCE state and verifier
       this.oauthService.clearSessionData();
 
-      // For Phase 2, we just log that tokens were received (do not expose in console)
-      // In Phase 3+, we would store tokens securely here
-      console.log('OAuth token exchange successful');
-
-      // Redirect to account page after successful login
+      // Redirect to account page
       this.router.navigate(['/pages/account']);
     } catch (error: any) {
       this.isLoading = false;

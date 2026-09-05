@@ -3,6 +3,7 @@ import { ToastrService } from 'ngx-toastr';
 import { FormControl, FormGroup, Validators } from '@angular/forms';
 import { Router } from '@angular/router';
 import { ShopifyCustomerService } from '../../shared/services/shopify-customer.service';
+import { ShopifyCustomerAccountService } from '../../shared/services/shopify-customer-account.service';
 
 @Component({
     selector: 'app-login',
@@ -25,7 +26,8 @@ export class LoginComponent {
   constructor(
     private toastrService: ToastrService,
     private router: Router,
-    private customerService: ShopifyCustomerService
+    private customerService: ShopifyCustomerService,
+    private oauthService: ShopifyCustomerAccountService
   ) { }
 
   ngOnInit () {
@@ -61,6 +63,23 @@ export class LoginComponent {
         }
       );
     }
+  }
+
+  // Shopify Customer Accounts login action
+  loginWithShopify(): void {
+    this.isLoading = true;
+    this.oauthService.startLogin().then(
+      () => {
+        // startLogin handles the redirect, so we don't navigate here
+        this.isLoading = false;
+      }
+    ).catch(
+      error => {
+        this.isLoading = false;
+        this.loginError = error.message || 'Failed to initiate Shopify login';
+        this.toastrService.error(this.loginError);
+      }
+    );
   }
 
   get email() { return this.loginForm.get('email') }

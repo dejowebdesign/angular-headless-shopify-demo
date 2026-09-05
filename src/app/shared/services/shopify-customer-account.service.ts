@@ -83,6 +83,75 @@ export class ShopifyCustomerAccountService {
     sessionStorage.removeItem(this.VERIFIER_KEY);
   }
 
+  // Token storage keys
+  private readonly ACCESS_TOKEN_KEY = 'shopify_customer_access_token';
+  private readonly ID_TOKEN_KEY = 'shopify_customer_id_token';
+  private readonly REFRESH_TOKEN_KEY = 'shopify_customer_refresh_token';
+  private readonly EXPIRES_AT_KEY = 'shopify_customer_expires_at';
+
+  // Store OAuth tokens securely in sessionStorage
+  public storeTokens(tokenResponse: {
+    access_token: string;
+    id_token?: string;
+    expires_in: number;
+    refresh_token?: string;
+  }): void {
+    const now = Date.now();
+    const expiresAt = now + (tokenResponse.expires_in * 1000);
+    
+    sessionStorage.setItem(this.ACCESS_TOKEN_KEY, tokenResponse.access_token);
+    if (tokenResponse.id_token) {
+      sessionStorage.setItem(this.ID_TOKEN_KEY, tokenResponse.id_token);
+    } else {
+      sessionStorage.removeItem(this.ID_TOKEN_KEY);
+    }
+    if (tokenResponse.refresh_token) {
+      sessionStorage.setItem(this.REFRESH_TOKEN_KEY, tokenResponse.refresh_token);
+    } else {
+      sessionStorage.removeItem(this.REFRESH_TOKEN_KEY);
+    }
+    sessionStorage.setItem(this.EXPIRES_AT_KEY, expiresAt.toString());
+  }
+
+  public getAccessToken(): string | null {
+    return sessionStorage.getItem(this.ACCESS_TOKEN_KEY);
+  }
+
+  public getIdToken(): string | null {
+    return sessionStorage.getItem(this.ID_TOKEN_KEY);
+  }
+
+  public getRefreshToken(): string | null {
+    return sessionStorage.getItem(this.REFRESH_TOKEN_KEY);
+  }
+
+  public getTokenExpiration(): number | null {
+    const expiresAt = sessionStorage.getItem(this.EXPIRES_AT_KEY);
+    return expiresAt ? parseInt(expiresAt, 10) : null;
+  }
+
+  public isAuthenticated(): boolean {
+    const accessToken = this.getAccessToken();
+    const expiresAt = this.getTokenExpiration();
+    
+    if (!accessToken) {
+      return false;
+    }
+    
+    if (!expiresAt) {
+      return false;
+    }
+    
+    return Date.now() < expiresAt;
+  }
+
+  public clearTokens(): void {
+    sessionStorage.removeItem(this.ACCESS_TOKEN_KEY);
+    sessionStorage.removeItem(this.ID_TOKEN_KEY);
+    sessionStorage.removeItem(this.REFRESH_TOKEN_KEY);
+    sessionStorage.removeItem(this.EXPIRES_AT_KEY);
+  }
+
   // Start the OAuth login flow
   public async startLogin(): Promise<void> {
     const config = environment.shopifyCustomerAccount;
@@ -175,6 +244,7 @@ export class ShopifyCustomerAccountService {
   // Logout
   public logout(): void {
     this.clearSessionData();
+    this.clearTokens();
     const config = environment.shopifyCustomerAccount;
     window.location.href = config.logoutEndpoint;
   }

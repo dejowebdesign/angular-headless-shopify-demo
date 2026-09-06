@@ -6,6 +6,7 @@ interface Discovery {
   authorization_endpoint: string;
   token_endpoint: string;
   end_session_endpoint: string;
+  issuer: string;
 }
 
 @Injectable({
@@ -19,7 +20,7 @@ export class ShopifyCustomerAccountService {
   // Token storage keys (namespaced to avoid conflict with legacy service)
   private readonly ACCESS_TOKEN_KEY = 'shopify_customer_account_access_token';
   private readonly ID_TOKEN_KEY = 'shopify_customer_account_id_token';
-  private readonly REFRESH_TOKEN_KEY = 'shopify_customer_account_refresh_token'; 
+  private readonly REFRESH_TOKEN_KEY = 'shopify_customer_account_refresh_token';
   private readonly EXPIRES_AT_KEY = 'shopify_customer_account_expires_at';
 
   private discovery: Discovery | null = null;
@@ -107,7 +108,8 @@ export class ShopifyCustomerAccountService {
       this.discovery = {
         authorization_endpoint: resp.authorization_endpoint,
         token_endpoint: resp.token_endpoint,
-        end_session_endpoint: resp.end_session_endpoint
+        end_session_endpoint: resp.end_session_endpoint,
+        issuer: resp.issuer
       };
       return this.discovery;
     } catch (error) {
@@ -178,6 +180,27 @@ export class ShopifyCustomerAccountService {
     sessionStorage.removeItem(this.EXPIRES_AT_KEY);
   }
 
+  // Get the Shopify-hosted customer account management URL
+  public async getAccountManagementUrl(): Promise<string | null> {
+    try {
+      const discovery = await this.getDiscovery();
+      // Expected issuer format: https://shopify.com/authentication/<shop-id>
+      const issuer = discovery.issuer;
+      if (!issuer) {
+        return null;
+      }
+      const match = issuer.match(/^https:\/\/shopify.com\/authentication\/(\d+)$/);
+      if (!match) {
+        return null;
+      }
+      const shopId = match[1];
+      return `https://shopify.com/${shopId}/account`;
+    } catch (error) {
+      console.error('Failed to get account management URL:', error);
+      return null;
+    }
+  }
+
   // Start the OAuth login flow
   public async startLogin(): Promise<void> {
     try {
@@ -200,7 +223,7 @@ export class ShopifyCustomerAccountService {
         response_type: 'code',
         state: state,
         code_challenge: codeChallenge,
-        code_challenge_method: 'S256'
+        code_charge_method: 'S256'
       });
       
       const authUrl = `${discovery.authorization_endpoint}?${params.toString()}`;
@@ -280,4 +303,3 @@ export class ShopifyCustomerAccountService {
       console.error('Failed to retrieve discovery configuration for logout:', error);
     });
   }
-}

@@ -1,48 +1,46 @@
 import { Component, OnInit } from '@angular/core';
-import { ShopifyCustomerService } from '../../shared/services/shopify-customer.service';
 import { Router } from '@angular/router';
+import { ShopifyCustomerAccountService } from '../../shared/services/shopify-customer-account.service';
 
 @Component({
-    selector: 'app-account',
-    templateUrl: './account.component.html',
-    styleUrls: ['./account.component.scss'],
-    standalone: false
+  selector: 'app-account',
+  templateUrl: './account.component.html',
+  styleUrls: ['./account.component.scss'],
+  standalone: false
 })
 export class AccountComponent implements OnInit {
-  customer: {
-    id: string;
-    email: string;
-    firstName: string;
-    lastName: string;
-    phone: string | null;
-    address: string | null;
-  } | null = null;
-  isLoading = true;
+  isLoading = false;
   loadError = false;
 
   constructor(
-    private customerService: ShopifyCustomerService,
-    private router: Router
-  ) {}
+    private router: Router,
+    private oauthService: ShopifyCustomerAccountService
+  ) { }
 
-  ngOnInit() {
-    this.customerService.getCurrentCustomer().subscribe({
-      next: (data) => {
-        this.customer = data;
+  async ngOnInit() {
+    this.isLoading = true;
+    try {
+      const authenticated = this.oauthService.isAuthenticated();
+      if (!authenticated) {
+        // Not authenticated: start Shopify login flow
+        await this.oauthService.startLogin();
+        // startLogin handles the redirect, so we don't navigate here
         this.isLoading = false;
-      },
-      error: () => {
-        this.loadError = true;
+      } else {
+        // Authenticated: get account management URL and redirect
+        const accountUrl = await this.oauthService.getAccountManagementUrl();
+        if (accountUrl) {
+          window.location.href = accountUrl;
+        } else {
+          // Fallback: if we cannot determine the URL, start login (should not happen)
+          await this.oauthService.startLogin();
+        }
         this.isLoading = false;
       }
-    });
-  }
-
-  logout() {
-    this.customerService.logout().subscribe({
-      complete: () => {
-        this.router.navigate(['/pages/login']);
-      }
-    });
+    } catch (error) {
+      this.isLoading = false;
+      this.loadError = true;
+      console.error('Account init error:', error);
+    }
   }
 }

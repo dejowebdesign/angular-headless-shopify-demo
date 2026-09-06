@@ -295,12 +295,22 @@ export class ShopifyCustomerAccountService {
 
   // Logout
   public logout(): void {
+  public logout(): void {
+    this.clearSessionData();
     this.clearSessionData();
     this.clearTokens();
+    this.clearTokens();
+    this.getDiscovery().then(discovery => {
     this.getDiscovery().then(discovery => {
       window.location.href = discovery.end_session_endpoint;
+      window.location.href = discovery.end_session_endpoint;
+    }).catch(error => {
     }).catch(error => {
       console.error('Failed to retrieve discovery configuration for logout:', error);
+      console.error('Failed to retrieve discovery configuration for logout:', error);
+    });
     });
   }
+  }
+}
 }

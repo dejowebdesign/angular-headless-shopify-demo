@@ -223,7 +223,7 @@ export class ShopifyCustomerAccountService {
         response_type: 'code',
         state: state,
         code_challenge: codeChallenge,
-        code_charge_method: 'S256'
+        code_challenge_method: 'S256'
       });
       
       const authUrl = `${discovery.authorization_endpoint}?${params.toString()}`;

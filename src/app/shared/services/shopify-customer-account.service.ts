@@ -311,7 +311,7 @@ export class ShopifyCustomerAccountService {
       this.clearSessionData();
       this.clearTokens();
 
-      window.location.href = logoutUrl.toString();
+      console.log('SHOPIFY LOGOUT URL:', logoutUrl.toString());
     }).catch((error: unknown) => {
       console.error('Failed to retrieve discovery configuration for logout:', error);
     });

@@ -303,3 +303,4 @@ export class ShopifyCustomerAccountService {
       console.error('Failed to retrieve discovery configuration for logout:', error);
     });
   }
+}

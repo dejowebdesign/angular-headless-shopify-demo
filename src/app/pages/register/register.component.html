@@ -5,57 +5,16 @@
 <main>
 
   <!-- breadcrumb start -->
-  <app-breadcrumb-one title="Login" subtitle="Login"></app-breadcrumb-one>
+  <app-breadcrumb-one title="Register" subtitle="Register"></app-breadcrumb-one>
   <!-- breadcrumb end -->
 
-  <!-- register Area start-->
-  <section class="login-area pt-100 pb-100">
+  <!-- register Area start -->
+  <section class="register-area pt-100 pb-100">
     <div class="container">
       <div class="row">
         <div class="col-lg-8 offset-lg-2">
           <div class="basic-login">
-            <h3 class="text-center mb-60">Signup From Here</h3>
-            <form [formGroup]="registerForm" (ngSubmit)="onSubmit()">
-              <div class="mb-20">
-                <label for="firstName">First Name <span>**</span></label>
-                <input id="firstName" type="text" placeholder="Enter First Name" formControlName="firstName" />
-                @if (firstName?.hasError('required') && (firstName?.touched || formSubmitted)) {
-                  <span class="text-danger">
-                    First Name is required
-                  </span>
-                }
-              </div>
-              <div class="mb-20">
-                <label for="lastName">Last Name <span>**</span></label>
-                <input id="lastName" type="text" placeholder="Enter Last Name" formControlName="lastName" />
-                @if (lastName?.hasError('required') && (lastName?.touched || formSubmitted)) {
-                  <span class="text-danger">
-                    Last Name is required
-                  </span>
-                }
-              </div>
-              <div class="mb-20">
-                <label for="email-id">Email Address <span>**</span></label>
-                <input id="email" type="text" placeholder="Email address..." formControlName="email" />
-                @if ((email?.hasError('required') && email?.touched) || (email?.hasError('email') && email?.dirty) || (formSubmitted && !email?.value)) {
-                  <span class="text-danger">
-                    Email is required and must be a valid email address
-                  </span>
-                }
-              </div>
-              <div class="mb-30">
-                <label for="pass">Password <span>**</span></label>
-                <input id="password" type="password" placeholder="Enter password..." formControlName="password" />
-                @if ((password?.hasError('required') && password?.touched) || (password?.errors?.['minlength'] && password?.dirty) || (formSubmitted && !password?.value)) {
-                  <span class="text-danger">
-                    Password is required and must be a 6 character
-                  </span>
-                }
-              </div>
-              <button type="submit" class="os-btn w-100">Register Now</button>
-              <div class="or-divide"><span>or</span></div>
-              <a routerLink="/pages/login" class="os-btn os-btn-black w-100">login Now</a>
-            </form>
+            <h3 class="text-center mb-60">Redirecting to Shopify...</h3>
           </div>
         </div>
       </div>

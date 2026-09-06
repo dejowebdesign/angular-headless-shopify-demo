@@ -1,3 +1,16 @@
+
+    logoutUrl.searchParams.set(
+      'post_logout_redirect_uri',
+      'https://dejo-shop.duckdns.org'
+    );
+
+    this.clearSessionData();
+
+    window.location.href = logoutUrl.toString();
+  }).catch(error => {
+    console.error('Failed to retrieve discovery configuration for logout:', error);
+  });
+}
 public logout(): void {  this.getDiscovery().then(discovery => {    const idToken = sessionStorage.getItem(this.ID_TOKEN_KEY);
     const logoutUrl = new URL(discovery.end_session_endpoint);
 
@@ -11,7 +24,6 @@ public logout(): void {  this.getDiscovery().then(discovery => {    const idToke
     );
 
     this.clearSessionData();
-
     window.location.href = logoutUrl.toString();
   }).catch(error => {
     console.error('Failed to retrieve discovery configuration for logout:', error);

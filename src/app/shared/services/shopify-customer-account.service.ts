@@ -276,9 +276,8 @@ export class ShopifyCustomerAccountService {
     this.clearTokens();
     this.getDiscovery().then(discovery => {
       window.location.href = discovery.end_session_endpoint;
-    }).catch(() => {
-      // Fallback to hardcoded logout endpoint from environment if discovery fails
-      window.location.href = environment.shopifyCustomerAccount.logoutEndpoint;
+    }).catch(error => {
+      console.error('Failed to retrieve discovery configuration for logout:', error);
     });
   }
 }

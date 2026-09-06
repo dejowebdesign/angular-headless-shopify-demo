@@ -184,7 +184,7 @@ export class ShopifyCartService {
         this.storefront.execute<{ cart: { id: string; checkoutUrl: string } }>(query, { cartId })
       );
 
-      let checkoutUrl = result.cart?.checkoutUrl ?? null;
+      let checkoutUrl: string | null = result.cart?.checkoutUrl ?? null;
       checkoutUrl = this.applyCheckoutSsoIfAuthenticated(checkoutUrl);
       return checkoutUrl;
     } catch (error) {
@@ -241,11 +241,8 @@ export class ShopifyCartService {
       if (result.cartLinesAdd.cart) {
         const checkoutUrl = result.cartLinesAdd.cart.checkoutUrl;
         const ssoApplied = this.applyCheckoutSsoIfAuthenticated(checkoutUrl);
-        if (ssoApplied) {
-          return { id: result.cartLinesAdd.cart.id, checkoutUrl: ssoApplied };
-        } else {
-          return { id: result.cartLinesAdd.cart.id, checkoutUrl: checkoutUrl };
-        }
+        const finalCheckoutUrl: string = ssoApplied ?? checkoutUrl;
+        return { id: result.cartLinesAdd.cart.id, checkoutUrl: finalCheckoutUrl };
       }
 
       return null;

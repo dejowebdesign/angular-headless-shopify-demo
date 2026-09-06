@@ -159,6 +159,10 @@ export class ShopifyCustomerService {
     );
   }
 
+  isAuthenticated(): boolean {
+    return !!this.tokenSubject.getValue();
+  }
+
   getCurrentCustomer(): Observable<{
     id: string;
     email: string;
